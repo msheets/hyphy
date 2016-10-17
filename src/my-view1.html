@@ -11,7 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-audio-button/paper-audio-button.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/record-mic/record-mic.html">
+<link rel="import" href="record-mic/record-mic.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-view1">
@@ -26,7 +26,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         right: 0;
         bottom: 0;
       }
-      .beatPad {
+      #beatPad {
         display: -webkit-box;
         display: -moz-box;
         display: -ms-flexbox;
@@ -48,16 +48,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <div class="beatPad">
-      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 1]"></paper-audio-button>
-      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 2]"></paper-audio-button>
-      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 3]"></paper-audio-button>
-      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 4]"></paper-audio-button>
-      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 5]"></paper-audio-button>
-      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 6]"></paper-audio-button>            
-      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 7]"></paper-audio-button>
-      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 8]"></paper-audio-button>
-      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 9]"></paper-audio-button>     
+    <div id="beatPad">
+      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 1]"></paper-audio-button>   
     </div>   
 
  <!-- need to make a paper-audio-beatpad as a grid you can plug in -->
@@ -67,7 +59,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
     Polymer({
-      is: 'my-view1'
+      is: 'my-view1',
+
+      listeners: {
+        'record-mic-result': '_onNewRecording'
+      },
+
+      _onNewRecording: function(e) {
+        var newAudioButton = document.createElement('paper-audio-button');
+        newAudioButton.src = e.detail.audioURL;
+        newAudioButton.title = "new";
+        newAudioButton.duration = e.detail.estDuration - 0.1; // better to understimate and have progress finish early than never finish
+
+        this.$.beatPad.appendChild(newAudioButton);
+      }
     });
   </script>
 </dom-module>
