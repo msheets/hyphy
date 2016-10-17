@@ -1,0 +1,274 @@
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+The `speech-mic` element has a mic icon and tapping on the mic will start the 
+speech recognition and invite the user to allow a page access to their
+microphone.  Once the access is allowed the user can start talking to the
+microphone and transcript will be recorded until the mic is tapped again to
+stop the speech recognition.
+
+Example:
+
+    <input value="{{transcript}}">
+    <speech-mic transcript="{{transcript}}"></speech-mic>
+
+@element speech-mic
+@homepage github.io
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-fab/paper-fab.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+
+<dom-module id="speech-mic">
+  <template>
+
+    <style is="custom-style">
+      :host {
+        display: inline-block;
+        position: relative;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+      }
+
+      .mic-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+      .mic-container.recognizing {
+        z-index: 10;
+      }
+
+      .icon {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
+
+      .icon > svg {
+        display: block;
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        width: 24px;
+        height: 24px;
+        pointer-events: none;
+      }
+
+      .recognizing > .icon {
+        background-color: #d23f31;
+        fill: #fff;
+        box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      }
+
+      .ring {
+        display: none;
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        border-radius: 100%;
+      }
+
+      .recognizing > .ring {
+        display: block;
+        background-color: rgba(0, 0, 0 , 0.1);
+        -webkit-animation: ring 1.2s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+      }
+
+      @-webkit-keyframes ring {
+        0% {
+          -webkit-transform: scale(0.5);
+        }
+        40% {
+          -webkit-transform: scale(0.8);
+        }
+        100% {
+          -webkit-transform: scale(1);
+        }
+      }
+
+      .ring2 {
+        display: none;
+        position: absolute;
+        top: -100%;
+        left: -100%;
+        width: 300%;
+        height: 300%;
+        border-radius: 100%;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+      }
+
+      .recognizing > .ring2 {
+        display: block;
+        -webkit-animation: ring2 1.5s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+      }
+
+      @-webkit-keyframes ring2 {
+        0% {
+          -webkit-transform: scale(0.3);
+        }
+        40% {
+          -webkit-transform: scale(0.5);
+        }
+        100% {
+          -webkit-transform: scale(1);
+        }
+      }
+    </style>
+
+    <div id="micContainer" class="mic-container {{ {recognizing: recognizing} | tokenList }}">
+      <paper-fab icon="av:mic"></paper-fab>
+    </div>
+    
+  </template>
+  <script>
+      
+      var SUPPORTED_LANGS = ['af-ZA', 'id-ID', 'ms-MY', 'ca-ES', 'cs-CZ', 'de-DE', 'en-US', 'en-AU', 'en-CA', 'en-IN', 'en-NZ', 'en-ZA', 'en-GB', 'es-AR', 'es-BO', 'es-CL', 'es-CO', 'es-CR', 'es-EC', 'es-SV', 'es-ES', 'es-US', 'es-GT', 'es-HN', 'es-MX', 'es-NI', 'es-PA', 'es-PY', 'es-PE', 'es-PR', 'es-DO', 'es-UY', 'es-VE', 'eu-ES', 'fr-FR', 'gl-ES', 'hr_HR', 'zu-ZA', 'is-IS', 'it-IT', 'it-CH', 'hu-HU', 'nl-NL', 'nb-NO', 'pl-PL', 'pt-BR', 'pt-PT', 'ro-RO', 'sk-SK', 'fi-FI', 'sv-SE', 'tr-TR', 'bg-BG', 'ru-RU', 'sr-RS', 'ko-KR', 'zh-cmn-Hans-CN', 'cmn-Hans-CN', 'cmn-Hans-HK', 'cmn-Hant-TW', 'yue-Hant-HK', 'ja-JP', 'la'];
+        
+      Polymer({
+        is: 'speech-mic',
+        
+        // Define public properties
+        properties: {
+          language: {
+            /* Specifies the language of the speech synthesis for the utterance */
+            type: String,
+            value: 'en-US'
+          },
+          finalTranscript: {
+            /* Returns the current transcript string */
+            type: String,
+            value: ''
+          },
+          interimTranscript: {
+            /* Returns the complete transcript string for the continuous recognition */
+            type: String,
+            value: ''
+          }
+        },
+        
+        listeners: {
+          'tap': 'toggleRecognition'                        
+        },
+
+        ready: function() {
+          if (window.hasOwnProperty('webkitSpeechRecognition')) {
+            this.recognition = new webkitSpeechRecognition();
+
+            this.recognizing = false;
+            this.final_transcript = '';
+
+            this.recognition.continuous = true;
+            this.recognition.interimResults = true;
+
+            this.recognition.onstart = this._onStart.bind(this);
+            this.recognition.onend = this._onEnd.bind(this);
+            this.recognition.onresult = this._onResult.bind(this);
+            this.recognition.onerror = this._onError.bind(this);
+            
+            // this.recognition.lang = this.language;
+          } else {
+            console.log("Speech recognition not supported.")
+            this.style.display = 'none'; // TODO: improve warning
+          }
+        },
+        
+        languageChanged: function() {
+          if (!this.recognition) {
+            return;
+          }
+          this.recognition.lang = this.findSupportedLang(this.language);
+        },
+        
+        findSupportedLang: function(l) {
+          if (SUPPORTED_LANGS.indexOf(l) >= 0) {
+            return l;
+          } else {
+            var ll = l.substring(0, 2);
+            for (var i = 0, sl; sl = SUPPORTED_LANGS[i]; i++) {
+              if (sl.indexOf(ll) == 0) {
+                return sl;
+              }
+            }
+          }
+        },
+        
+        toggleRecognition: function() {
+          if (!this.recognition) {
+            return;
+          }
+          if (this.recognizing) {
+            this.recognition.stop();
+          } else {
+            this.recognition.start();
+          }
+        },
+        
+        _onStart: function(e) {
+          console.log("Starting recognition");
+          this.final_transcript = '';
+          this.recognizing = true;
+        },
+        
+        _onEnd: function() {
+          console.log("Ending recognition");
+          this.recognizing = false;
+        },
+        
+        _onStop: function() {
+          console.log("Stopping recognition");
+          this.recognition && this.recognition.stop();
+        },
+        
+         /**
+         * Fired when the speech recognizer returns a result.
+         * 
+         * @event speech-mic-result
+         * @param {Object} detail
+         *   @param {Object} detail.results SpeechRecognitionEvent object
+         *   @param {Object} detail.transcript The current transcript string
+         *   @param {Object} detail.completeTranscript The complete transcript 
+         *                   string for the continuous recognition.
+         */
+        _onResult: function(e) {
+          var interim_transcript = '';
+
+          for (var i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              this.finalTranscript += event.results[i][0].transcript;
+            } else {
+              this.interimTranscript += event.results[i][0].transcript;
+            }
+          }
+          this.fire('speech-mic-result', {
+            results: e.results,
+            final_transcript: this.finalTranscript,
+            interim_transcript: this.interimTranscript,
+          });
+        },
+
+        _onError: function(e) {
+          console.log(e);
+        }
+
+      });
+    
+  </script>
+</dom-module>

@@ -1,0 +1,169 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+
+<!--
+`record-mic`
+Audio recording component controlled via microphone FAB
+
+@demo demo/index.html 
+-->
+
+<dom-module id="record-mic">
+  <template>
+    <style>
+      :host {
+        display: block;
+        position: relative;
+        cursor: pointer;
+      }
+
+      --accent-color: var(--paper-red-500);
+      --paper-fab-background: var(--record-color, --paper-red-500);
+      --paper-fab-keyboard-focus-background: var(--record-color, --paper-red-500);
+
+      /* NOTE: Both values are needed, since some phones require the value `transparent`. */
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+      -webkit-tap-highlight-color: transparent;
+
+      #pulseSource {
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      :host[recognizing] #pulseSource{
+        animation: pulse 1.5s ease infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0px rgba(255, 0, 0, 0.4);
+        }
+        99% {
+          box-shadow: 0 0 0 30px rgba(255, 0, 0, 0.0);
+        }
+      }
+
+    </style>
+    
+    <div id="pulseSource"></div>
+    <paper-fab id="button" mini=[[mini]] icon="av:mic" toggles></paper-fab>
+
+    <div id="soundClips">{{ clipContainer }}</div>
+    
+  </template>
+
+  <script>
+    Polymer({
+      is: 'record-mic',
+
+      // Define public properties
+      properties: {
+        recording: {
+          type: Boolean,
+          value: false,
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        /**
+         * Set this to true to style this is a "mini" FAB.
+         */
+        mini: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+      },
+
+      listeners: {
+        'tap': 'toggleRecording'
+      },
+
+      ready: function() {
+        // updated get user media function to match current spec: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+        // media recorder: https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder
+
+        if (navigator.mediaDevices.getUserMedia) {
+          console.log('getUserMedia is supported');
+
+          var promise = navigator.mediaDevices.getUserMedia({ audio: true });
+
+          var self = this;
+          promise.then(function(stream) {
+            self.stream = stream; // TODO make public
+            self.mediaRecorder = new MediaRecorder(self.stream);
+            self.chunks = [];
+            
+            self.mediaRecorder.onstart = self._onRecordingStart.bind(self);
+            self.mediaRecorder.onstop = self._onRecordingStop.bind(self);
+            self.mediaRecorder.ondataavailable = self._onRecordingDataAvailable.bind(self);
+            self.mediaRecorder.onerror = self._onRecordingError.bind(self);
+          });
+
+          promise.catch(function(err) {
+            console.log("Error in getUserMedia: " + err);
+          });
+        } else {
+           console.log('getUserMedia is not supported on this browser');
+        }
+      },
+
+      _onGetUserMedia: function(stream) {
+       
+      },
+
+      toggleRecording: function() {
+        if (!this.mediaRecorder) {
+          return;
+        }
+
+        if (this.recording) {
+          this.mediaRecorder.stop();
+        } else {
+          this.mediaRecorder.start();
+        }
+      },
+
+      _onRecordingStart: function(e) {
+        this.startTime = (new Date()).getTime();        
+        console.log(this.mediaRecorder.state);
+        console.log("recording started");
+        this.recording = true;
+      },
+
+      _onRecordingStop: function(e) {
+        this.endTime = (new Date()).getTime();
+        console.log(this.mediaRecorder.state);
+        console.log("recording stopped");
+        this.recording = false;
+        console.log("data available after MediaRecorder.stop() called.");
+
+        var blob = new Blob(this.chunks, { 'type' : 'audio/ogg; codecs=opus' });
+        this.chunks = [];
+        var audioURL = window.URL.createObjectURL(blob);
+
+        this.fire('record-mic-result', {
+          audioURL: audioURL,
+          // duration is not available for streams until after a playback, we record here for good measure
+          // Context: http://stackoverflow.com/questions/31818821/audio-clips-not-getting-the-duration-first-time-played-using-html5-audio-tag
+          estDuration: (this.endTime - this.startTime) / 1000
+        });
+      },
+
+      _onRecordingDataAvailable: function(e) {
+        this.chunks.push(e.data);
+      },
+
+      _onRecordingError: function(e) {
+        console.log(e);
+      }
+
+    });
+  </script>
+</dom-module>
