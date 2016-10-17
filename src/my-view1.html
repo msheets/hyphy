@@ -9,6 +9,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-audio-button/paper-audio-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/record-mic/record-mic.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-view1">
@@ -16,17 +19,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style include="shared-styles">
       :host {
         display: block;
+        padding-top: 20px;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+      .beatPad {
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;  
+        
+        -webkit-flex-flow: row wrap;
+        flex-flow: row wrap;
 
-        padding: 10px;
+        /* Then we define how is distributed the remaining space */
+        justify-content: center;
+        align-items: flex-start;
+      }
+
+      #recordMic {
+        position: absolute;
+        right: 20px;
+        bottom: 20px;
       }
     </style>
 
-    <div class="card">
-      <div class="circle">1</div>
-      <h1>View One</h1>
-      <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
-      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
-    </div>
+    <div class="beatPad">
+      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 1]"></paper-audio-button>
+      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 2]"></paper-audio-button>
+      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 3]"></paper-audio-button>
+      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 4]"></paper-audio-button>
+      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 5]"></paper-audio-button>
+      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 6]"></paper-audio-button>            
+      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 7]"></paper-audio-button>
+      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 8]"></paper-audio-button>
+      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 9]"></paper-audio-button>     
+    </div>   
+
+ <!-- need to make a paper-audio-beatpad as a grid you can plug in -->
+
+    <record-mic id="recordMic"></record-mic>
   </template>
 
   <script>
