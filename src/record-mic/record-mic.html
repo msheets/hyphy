@@ -17,8 +17,8 @@ Audio recording component controlled via microphone FAB
         position: relative;
         cursor: pointer;
 
-        --paper-fab-background: var(--record-color, --paper-red-700);
-        --paper-fab-keyboard-focus-background: var(--record-color, --paper-red-700);
+        --paper-fab-background: var(--record-mic-background, --paper-red-700);
+        --paper-fab-keyboard-focus-background: var(--record-mic-background, --paper-red-700);
 
         /* NOTE: Both values are needed, since some phones require the value `transparent`. */
         -webkit-tap-highlight-color: rgba(0,0,0,0);
@@ -46,10 +46,10 @@ Audio recording component controlled via microphone FAB
       @keyframes pulse {
         0% {
           transform: scale(1);
-          box-shadow: 0 0 0 0px rgba(255, 0, 0, 0.4);
+          box-shadow: 0 0 0 0px var(--record-mic-pulse-start, rgba(255, 0, 0, 0.4));
         }
         99% {
-          box-shadow: 0 0 0 30px rgba(255, 0, 0, 0.0);
+          box-shadow: 0 0 0 30px var(--record-mic-pulse-end, rgba(255, 0, 0, 0.0));
         }
       }
 

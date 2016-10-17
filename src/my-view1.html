@@ -25,6 +25,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         left: 0;
         right: 0;
         bottom: 0;
+
+        --record-mic-background: var(--app-secondary-color);
+        --record-mic-pulse-start: rgba(105,240,174,0.4);
+        --record-mic-pulse-send: rgba(105,240,174,0);
       }
       #beatPad {
         display: -webkit-box;
@@ -37,19 +41,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         flex-flow: row wrap;
 
         /* Then we define how is distributed the remaining space */
-        justify-content: center;
+        justify-content: flex-start;
         align-items: flex-start;
       }
 
       #recordMic {
-        position: absolute;
+        position: fixed;
         right: 20px;
         bottom: 20px;
       }
     </style>
 
     <div id="beatPad">
-      <paper-audio-button src="../media/real-hero.m4a" title="[Clip 1]"></paper-audio-button>   
     </div>   
 
  <!-- need to make a paper-audio-beatpad as a grid you can plug in -->
@@ -68,10 +71,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _onNewRecording: function(e) {
         var newAudioButton = document.createElement('paper-audio-button');
         newAudioButton.src = e.detail.audioURL;
-        newAudioButton.title = "new";
+        newAudioButton.title = "";
         newAudioButton.duration = e.detail.estDuration - 0.1; // better to understimate and have progress finish early than never finish
 
         this.$.beatPad.appendChild(newAudioButton);
+        newAudioButton.show();
+
       }
     });
   </script>
