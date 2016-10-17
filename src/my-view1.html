@@ -9,8 +9,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-audio-button/paper-audio-button.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="paper-audio-button/paper-audio-button.html">
 <link rel="import" href="record-mic/record-mic.html">
 <link rel="import" href="shared-styles.html">
 
@@ -27,8 +27,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         bottom: 0;
 
         --record-mic-background: var(--app-secondary-color);
-        --record-mic-pulse-start: rgba(105,240,174,0.4);
-        --record-mic-pulse-send: rgba(105,240,174,0);
+        --record-mic-pulse-start: rgba(0, 200, 83,0.4);
+        --record-mic-pulse-send: rgba(0, 200, 83,0);
       }
       #beatPad {
         display: -webkit-box;
@@ -61,6 +61,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <script>
+    var counter = 0;
     Polymer({
       is: 'my-view1',
 
@@ -71,7 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _onNewRecording: function(e) {
         var newAudioButton = document.createElement('paper-audio-button');
         newAudioButton.src = e.detail.audioURL;
-        newAudioButton.title = "";
+        newAudioButton.title = String.fromCharCode('A'.charCodeAt(0) + counter++);
         newAudioButton.duration = e.detail.estDuration - 0.1; // better to understimate and have progress finish early than never finish
 
         this.$.beatPad.appendChild(newAudioButton);

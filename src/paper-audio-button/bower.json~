@@ -1,0 +1,37 @@
+{
+  "name": "paper-audio-button",
+  "version": "0.1.0",
+  "authors": [
+    "Matt Sheets <matt.p.sheets@gmail.com>"
+  ],
+  "description": "A MD audio button meant to be used in beatpad-type web apps. Based on paper-audio-player.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "audio",
+    "button",
+    "pad",
+    "paper",
+    "minimalistic"
+  ],
+  "main": "paper-audio-button.html",
+  "license": "MIT",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/demo/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "paper-progress": "PolymerElements/paper-progress#~1.0.1",
+    "iron-icons": "PolymerElements/iron-icons#~1.0.3",
+    "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.5",
+    "paper-ripple": "PolymerElements/paper-ripple#~1.0.5"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*",
+    "normalize.css": "~3.0.3"
+  }
+}

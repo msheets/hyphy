@@ -1,0 +1,30 @@
+{
+  "name": "paper-audio-button",
+  "version": "0.1.0",
+  "description": "A MD audio button meant to be used in beatpad-type web apps. Based on paper-audio-player.",
+  "main": "paper-audio-button.html",
+  "directories": {
+    "demo": "demo"
+  },
+  "repository": {
+    "type": "git",
+  },
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "audio",
+    "button",
+    "paper",
+    "material",
+    "minimalistic"
+  ],
+  "author": "Matt Sheets <msheets@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "bower": "^1.5.3",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^3.0.2",
+    "gulp-sass": "^2.0.4"
+  }
+}
