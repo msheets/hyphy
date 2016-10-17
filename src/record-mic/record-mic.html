@@ -16,15 +16,14 @@ Audio recording component controlled via microphone FAB
         display: block;
         position: relative;
         cursor: pointer;
+
+        --paper-fab-background: var(--record-color, --paper-red-700);
+        --paper-fab-keyboard-focus-background: var(--record-color, --paper-red-700);
+
+        /* NOTE: Both values are needed, since some phones require the value `transparent`. */
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        -webkit-tap-highlight-color: transparent;
       }
-
-      --accent-color: var(--paper-red-500);
-      --paper-fab-background: var(--record-color, --paper-red-500);
-      --paper-fab-keyboard-focus-background: var(--record-color, --paper-red-500);
-
-      /* NOTE: Both values are needed, since some phones require the value `transparent`. */
-      -webkit-tap-highlight-color: rgba(0,0,0,0);
-      -webkit-tap-highlight-color: transparent;
 
       #pulseSource {
         border-radius: 50%;
@@ -33,11 +32,16 @@ Audio recording component controlled via microphone FAB
         left: 0;
         right: 0;
         bottom: 0;
-      }
-
-      :host[recognizing] #pulseSource{
         animation: pulse 1.5s ease infinite;
       }
+
+      /**
+       * :host[recording] seems broken - 
+       *    https://github.com/Polymer/polymer/issues/3610
+       *    https://github.com/Polymer/polymer/issues/1952
+       * using workaround of binding recording to pulseSource
+       * use hidden instead
+       */
 
       @keyframes pulse {
         0% {
@@ -51,10 +55,8 @@ Audio recording component controlled via microphone FAB
 
     </style>
     
-    <div id="pulseSource"></div>
-    <paper-fab id="button" mini=[[mini]] icon="av:mic" toggles></paper-fab>
-
-    <div id="soundClips">{{ clipContainer }}</div>
+    <div id="pulseSource" hidden$="{{!recording}}"></div>
+    <paper-fab id="button" mini=[[mini]] icon=[[icon]] toggles></paper-fab>
     
   </template>
 
@@ -79,6 +81,11 @@ Audio recording component controlled via microphone FAB
           value: false,
           reflectToAttribute: true
         },
+
+        icon: {
+          type: String,
+          value: "av:mic"
+        }
       },
 
       listeners: {
@@ -132,17 +139,17 @@ Audio recording component controlled via microphone FAB
 
       _onRecordingStart: function(e) {
         this.startTime = (new Date()).getTime();        
-        console.log(this.mediaRecorder.state);
-        console.log("recording started");
         this.recording = true;
+        this.icon = "av:stop";
+        this.updateStyles();
       },
 
       _onRecordingStop: function(e) {
         this.endTime = (new Date()).getTime();
-        console.log(this.mediaRecorder.state);
-        console.log("recording stopped");
         this.recording = false;
-        console.log("data available after MediaRecorder.stop() called.");
+        this.icon = "av:mic";
+        this.updateStyles();   
+
 
         var blob = new Blob(this.chunks, { 'type' : 'audio/ogg; codecs=opus' });
         this.chunks = [];
