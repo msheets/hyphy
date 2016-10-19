@@ -53,11 +53,15 @@ Custom property                             | Description                       
         display: block;
         margin: 5px;
         box-sizing: border-box;
-        flex: 0 1 auto;
-        width: 110px;
+        flex: 1 1 108px;
+   
         height: 110px;
         font-family: 'Roboto Mono', 'Helvetica Neue', Arial, sans-serif;
         visibility: hidden;
+
+        --paper-button: {
+          margin: 0;
+        }
       }
 
       #title,
@@ -145,7 +149,7 @@ Custom property                             | Description                       
       .flex {
         -ms-flex: 1;
         -webkit-flex: 1;
-        flex: 1;
+        flex: 1 0 auto;
       }
 
       .fit {
@@ -259,7 +263,8 @@ Custom property                             | Description                       
       _onNeonAnimationFinish: function() {
         // set the second title to flow out an dfill space
         var button = this;
-        button.$.titleRemaining.style.width = button.$.base.getBoundingClientRect().width + 'px';
+
+        // button.$.titleRemaining.style.width = button.$.base.getBoundingClientRect().width + 'px';
       },
 
       show: function() {
@@ -324,6 +329,9 @@ Custom property                             | Description                       
       // starts Timer
       _startProgressTimer: function() {
         var button = this;
+
+        // can we extrac this out for efficiency
+        button.$.titleRemaining.style.width = button.$.base.getBoundingClientRect().width + 'px';
 
         button.timer = {};
 

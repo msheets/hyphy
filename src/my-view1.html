@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
 <link rel="import" href="paper-audio-button/paper-audio-button.html">
 <link rel="import" href="record-mic/record-mic.html">
 <link rel="import" href="shared-styles.html">
@@ -19,7 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style include="shared-styles">
       :host {
         display: block;
-        padding-top: 20px;
+        padding: 5px;
         position: absolute;
         top: 64px;
         left: 0;
@@ -41,7 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         flex-flow: row wrap;
 
         /* Then we define how is distributed the remaining space */
-        justify-content: flex-start;
+        justify-content: space-around;
         align-items: flex-start;
       }
 
@@ -65,8 +66,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
       is: 'my-view1',
 
+      behaviors: [
+        Polymer.NeonSharedElementAnimatableBehavior
+      ],
+
+      // https://github.com/PolymerElements/neon-animation/blob/master/demo/tiles/circles-page.html
+      properties: {
+        animationConfig: {
+          value: function() {
+            var buttons = Polymer.dom(this.root).querySelectorAll('paper-audio-button');
+            var buttonsArray = Array.prototype.slice.call(buttons);
+            return {
+              'entry': [{
+                name: 'cascaded-animation',
+                animation: 'scale-up-animation',
+                nodes: buttonsArray
+              }],
+              'exit': [{
+                name: 'hero-animation',
+                id: 'hero',
+                fromPage: this
+              }, {
+                name: 'cascaded-animation',
+                animation: 'scale-down-animation'
+              }]
+            };
+          }
+        }
+      },
+
       listeners: {
-        'record-mic-result': '_onNewRecording'
+        'record-mic-result': '_onNewRecording',
+        'tap': '_onClick'
       },
 
       _onNewRecording: function(e) {
@@ -77,7 +108,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         this.$.beatPad.appendChild(newAudioButton);
         newAudioButton.show();
+      },
 
+      _onClick: function(e) {
+        e.stopPropagation();
+
+        var target = Polymer.dom(event).rootTarget;
+        console.log(target.nodeName);
+        if (target.nodeName == 'PAPER-AUDIO-BUTTON') {
+          // configure the page animation
+          this.sharedElements = {
+            'hero': target
+          };
+          var nodesToScale = []; // nodes to scale away
+          var buttons = Polymer.dom(this.root).querySelectorAll('paper-audio-button');
+          for (var button, index = 0; button = buttons[index]; index++) {
+            if (button !== event.target) {
+              nodesToScale.push(button);
+            }
+          }
+          this.animationConfig['exit'][1].nodes = nodesToScale;
+          //this.fire('circle-click');
+        }
       }
     });
   </script>

@@ -93,6 +93,8 @@ Audio recording component controlled via microphone FAB
       },
 
       ready: function() {
+        console.log("Entering read()");
+
         // updated get user media function to match current spec: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
         // media recorder: https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder
 
@@ -119,13 +121,13 @@ Audio recording component controlled via microphone FAB
         } else {
            console.log('getUserMedia is not supported on this browser');
         }
-      },
 
-      _onGetUserMedia: function(stream) {
-       
+        console.log("Exiting read()");
       },
 
       toggleRecording: function() {
+        console.log('Entering toggleRecording()');
+
         if (!this.mediaRecorder) {
           return;
         }
@@ -135,6 +137,8 @@ Audio recording component controlled via microphone FAB
         } else {
           this.mediaRecorder.start();
         }
+
+        console.log('Exit toggleRecording()');
       },
 
       _onRecordingStart: function(e) {
