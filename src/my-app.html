@@ -23,6 +23,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="my-icons.html">
 <link rel="import" href="audio-button-editor.html">
 
+
+<link rel="import" href="bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="bower_components/polymerfire/polymerfire.html">
+
 <link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 
@@ -98,6 +102,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </app-toolbar>
         </app-header>
 
+        <login></login>
+
         <iron-pages
             selected="[[page]]"
             attr-for-selected="name"
@@ -111,6 +117,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
+
+    <firebase-document
+      id="document"
+      app-name="notes"
+      path="[[editableNoteId]]"
+      data="{{editableNote}}">
+  </firebase-document>
   </template>
 
   <script>

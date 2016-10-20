@@ -62,7 +62,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <script>
-    var counter = 0;
     Polymer({
       is: 'my-view1',
 
@@ -103,7 +102,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _onNewRecording: function(e) {
         var newAudioButton = document.createElement('paper-audio-button');
         newAudioButton.src = e.detail.audioURL;
-        newAudioButton.title = String.fromCharCode('A'.charCodeAt(0) + counter++);
+        newAudioButton.title = '';
         newAudioButton.duration = e.detail.estDuration - 0.1; // better to understimate and have progress finish early than never finish
 
         this.$.beatPad.appendChild(newAudioButton);
