@@ -21,14 +21,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="my-icons.html">
-<link rel="import" href="audio-button-editor.html">
 
 
-<link rel="import" href="bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
-<link rel="import" href="bower_components/polymerfire/polymerfire.html">
-
-<link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
-<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+<!--<link rel="import" href="bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="bower_components/polymerfire/polymerfire.html">-->
 
 <dom-module id="my-app">
   <template>
@@ -39,8 +35,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         --app-secondary-4alpha: rgba(105,240,174,0.4);
         --app-secondary-0alpha: rgba(105,240,174,0);
 
+                -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */   
+
         display: block;
       }
+
+      body { -webkit-touch-callout: none !important; }
+      a { -webkit-user-select: none !important; }
 
       app-header {
         color: #fff;

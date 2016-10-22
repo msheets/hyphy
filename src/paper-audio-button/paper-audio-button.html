@@ -3,7 +3,7 @@
 <link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../../bower_components/paper-ripple/paper-ripple.html">
 
@@ -57,11 +57,15 @@ Custom property                             | Description                       
    
         height: 110px;
         font-family: 'Roboto Mono', 'Helvetica Neue', Arial, sans-serif;
-        visibility: hidden;
 
         --paper-button: {
           margin: 0;
         }
+
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */   
       }
 
       #title,
@@ -73,10 +77,11 @@ Custom property                             | Description                       
 	      flex-direction:column;
 
         text-align: center;
-        line-height: 50px;
+        line-height: 1.2em;
+        font-size: 24px;
+        word-wrap: break-word;
 
         pointer-events: none;
-        font-size: 54px;
       }
 
       #title {
@@ -104,14 +109,6 @@ Custom property                             | Description                       
         position: relative;
         overflow: hidden;
         background: rgba(255,255,255,.75);
-      }
-
-      paper-progress {
-        position: absolute;
-        width: auto;
-        right: 0;
-        bottom: 0;
-        left: 0;
       }
 
       paper-ripple {
@@ -209,7 +206,7 @@ Custom property                             | Description                       
         },
         title: {
           type: String,
-          value: '[Clip]'
+          value: ''
         },
         color: {
           type: String,
@@ -260,16 +257,16 @@ Custom property                             | Description                       
         'neon-animation-finish' : '_onNeonAnimationFinish'
       },
 
+      // this exists so that paper-audio-button can own the tap event
+      _onTap: function() {
+        console.log("Button tapped");
+      },
+
       _onNeonAnimationFinish: function() {
         // set the second title to flow out an dfill space
         var button = this;
 
         // button.$.titleRemaining.style.width = button.$.base.getBoundingClientRect().width + 'px';
-      },
-
-      show: function() {
-        this.style.visibility = 'visible';
-        this.playAnimation('entry');
       },
 
       // When element is created
