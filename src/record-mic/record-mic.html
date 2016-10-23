@@ -93,8 +93,6 @@ Audio recording component controlled via microphone FAB
       },
 
       ready: function() {
-        console.log("Entering read()");
-
         // updated get user media function to match current spec: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
         // media recorder: https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder
 
@@ -106,6 +104,8 @@ Audio recording component controlled via microphone FAB
           var self = this;
           promise.then(function(stream) {
             self.stream = stream; // TODO make public
+
+            // set up media recorder
             self.mediaRecorder = new MediaRecorder(self.stream);
             self.chunks = [];
             
@@ -113,6 +113,24 @@ Audio recording component controlled via microphone FAB
             self.mediaRecorder.onstop = self._onRecordingStop.bind(self);
             self.mediaRecorder.ondataavailable = self._onRecordingDataAvailable.bind(self);
             self.mediaRecorder.onerror = self._onRecordingError.bind(self);
+
+            // set up analyser
+            self.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            self.analyser = self.audioCtx.createAnalyser();
+
+            self.source = self.audioCtx.createMediaStreamSource(self.stream);
+            self.source.connect(self.analyser);
+
+            // TODO - make variables private
+            // see: https://github.com/GoogleChrome/voice-memos/blob/bcb225a41d3dfcec5e9805adf33d27995840c9f0/src/scripts/controller/RecordController.js
+            self.analyserDataSize = 256;
+            self.analyserStart = 32;
+            self.analyserEnd = self.analyserDataSize;
+            self.analyserDataRange = self.analyserEnd - self.analyserStart;
+            self.analyserData = new Uint8Array(self.analyserDataSize);
+
+            self.analyser.fftSize = self.analyserDataSize;
+            self.analyser.smoothingTimeConstant = 0.3;
           });
 
           promise.catch(function(err) {
@@ -121,13 +139,9 @@ Audio recording component controlled via microphone FAB
         } else {
            console.log('getUserMedia is not supported on this browser');
         }
-
-        console.log("Exiting read()");
       },
 
       toggleRecording: function() {
-        console.log('Entering toggleRecording()');
-
         if (!this.mediaRecorder) {
           return;
         }
@@ -137,8 +151,6 @@ Audio recording component controlled via microphone FAB
         } else {
           this.mediaRecorder.start();
         }
-
-        console.log('Exit toggleRecording()');
       },
 
       _onRecordingStart: function(e) {
@@ -146,6 +158,33 @@ Audio recording component controlled via microphone FAB
         this.recording = true;
         this.icon = "av:stop";
         this.updateStyles();
+
+        // begin audio volume tracking
+        this.volumeData = [];
+        this.volumeSum = 0;
+        this.volumeMax = 1;
+        requestAnimationFrame(this._trackAudioVolume.bind(this));
+      },
+
+      _trackAudioVolume: function() {
+        this.volumeSum = 0;
+        this.analyser.getByteFrequencyData(this.analyserData);
+
+        for (var i = this.analyserStart; i < this.analyserEnd; i++) {
+          this.volumeSum += this.analyserData[i];
+        }
+
+        var volume = this.volumeSum / this.analyserDataRange;
+        if (volume > this.volumeMax)
+          this.volumeMax = volume;
+
+        this.volumeData.push(volume);
+
+        if (!this.recording)
+          return;
+
+        // repeat
+        requestAnimationFrame(this._trackAudioVolume.bind(this));
       },
 
       _onRecordingStop: function(e) {
@@ -154,16 +193,21 @@ Audio recording component controlled via microphone FAB
         this.icon = "av:mic";
         this.updateStyles();   
 
-
         var blob = new Blob(this.chunks, { 'type' : 'audio/ogg; codecs=opus' });
         this.chunks = [];
         var audioURL = window.URL.createObjectURL(blob);
+
+        // Normalize volume data
+        for (var d = 0; d < this.volumeData.length; d++) {
+          this.volumeData[d] /= this.volumeMax;
+        }
 
         this.fire('record-mic-result', {
           audioURL: audioURL,
           // duration is not available for streams until after a playback, we record here for good measure
           // Context: http://stackoverflow.com/questions/31818821/audio-clips-not-getting-the-duration-first-time-played-using-html5-audio-tag
-          estDuration: (this.endTime - this.startTime) / 1000
+          estDuration: (this.endTime - this.startTime) / 1000,
+          volumeData: this.volumeData
         });
       },
 

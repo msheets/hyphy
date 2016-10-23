@@ -10,6 +10,8 @@
 <link rel="import" href="../../bower_components/neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 
+<link rel="import" href="../../bower_components/vaadin-context-menu/vaadin-long-touch.html">
+
 <!--
 A custom audio player with material paper style and clean design.
 
@@ -134,21 +136,6 @@ Custom property                             | Description                       
       }
 
       /* Flexbox Helpers */
-      .layout-horizontal {
-        display: flex;
-        display: -webkit-flex;
-        display: -ms-flexbox;
-        -ms-flex-direction: row;
-        -webkit-flex-direction: row;
-        flex-direction: row;
-      }
-
-      .flex {
-        -ms-flex: 1;
-        -webkit-flex: 1;
-        flex: 1 0 auto;
-      }
-
       .fit {
         position: absolute;
         top: 0;
@@ -157,35 +144,23 @@ Custom property                             | Description                       
         left: 0;
       }
 
-      .self-start {
-        -ms-align-self: flex-start;
-        -webkit-align-self: flex-start;
-        align-self: flex-start;
-      }
-
-      .self-end {
-        -ms-align-self: flex-end;
-        -webkit-align-self: flex-end;
-        align-self: flex-end;
-      }
-
     </style>
 
     <paper-button id="base" raised>
     	<!-- Title -->      
 	    <div id="title" class="fit">{{ title }}</div>
         
-        <!-- Audio HTML5 element -->
-        <audio id="audio" src="{{ src }}" preload="auto"></audio>
+      <!-- Audio HTML5 element -->
+      <audio id="audio" src="{{ src }}" preload="auto"></audio>
 
-        <!-- Progress bar -->
-        <div id="progressElapsed" class="fit"></div>
-        <div id="progressRemaining" class="fit">
-          <div id="titleRemaining">{{ title }}</div>
-        </div>
+      <!-- Progress bar -->
+      <div id="progressElapsed" class="fit"></div>
+      <div id="progressRemaining" class="fit">
+        <div id="titleRemaining">{{ title }}</div>
+      </div>
 
-        <!-- Error 
-      	<iron-icon id="error" icon="error-outline" class="fit" hidden$="{{ !error }}"></iron-icon>-->
+      <!-- Error 
+    	<iron-icon id="error" icon="error-outline" class="fit" hidden$="{{ !error }}"></iron-icon>-->
     </paper-button>
 
   </template>
@@ -208,6 +183,14 @@ Custom property                             | Description                       
           type: String,
           value: ''
         },
+        startTime: {
+          type: Number,
+          value: 0
+        },
+        endTime: {
+          type: Number,
+          value: Infinity
+        },
         color: {
           type: String,
           observer: '_changeColor'
@@ -216,6 +199,7 @@ Custom property                             | Description                       
           type: Boolean,
           value: false
         },
+        // this is current time with respect to duration, not clipDuration
         currentTime: {
           type: Number,
           value: 0,
@@ -228,10 +212,22 @@ Custom property                             | Description                       
         error: {
           type: Boolean
         },
-        // for streams, we cannot detect duration, so rely on user to return
+        
+        // duration measures the calculated duration based off of start and end time
         duration: {
           type: Number,
           value: Infinity
+        },
+        
+        // for streams, we cannot detect duration, so rely on user to return
+        // clipDuration represents the duration of the clip in it's entirity
+        clipDuration: {
+          type: Number,
+          value: Infinity
+        },
+        volumeData: {
+          type: Array,
+          value: []
         },
         animationConfig: {
           type: Object,
@@ -249,24 +245,13 @@ Custom property                             | Description                       
       // Register event listeners
       listeners: {
         'audio.loadedmetadata'  : '_onCanPlay',
+        'audio.error'           : '_onError',
         'audio.playing'         : '_onPlaying',
         'audio.pause'           : '_onPause',
         'audio.ended'           : '_onEnd',
-        'audio.error'           : '_onError',
-        'tap'					          : 'restart',
+        'vaadin-long-touch'     : '_preventDefault', // long touch should not do anything here... - this porbably isn't
+        'tap'                   : 'restart',
         'neon-animation-finish' : '_onNeonAnimationFinish'
-      },
-
-      // this exists so that paper-audio-button can own the tap event
-      _onTap: function() {
-        console.log("Button tapped");
-      },
-
-      _onNeonAnimationFinish: function() {
-        // set the second title to flow out an dfill space
-        var button = this;
-
-        // button.$.titleRemaining.style.width = button.$.base.getBoundingClientRect().width + 'px';
       },
 
       // When element is created
@@ -274,11 +259,48 @@ Custom property                             | Description                       
         var button = this;
 
         button.$.audio.load();
-        // create Player defaults
+
+        // Initialize private variables
         button.canBePlayed = false;
         button.isPlaying = false;
         button.ended = false;
         button.error = false;
+      },
+
+      // when audio file can be played in user's browser
+      _onCanPlay: function() {
+        var button = this;
+
+        button.canBePlayed = true;
+        this._calculateDuration();
+        button.timeLeft = button.duration;
+   
+        // auto play if specified
+        if (button.autoPlay) button.$.audio.play();
+      },
+
+      // if one changes we need to update
+      _calculateDuration: function() {
+        var button = this;
+
+        // TODO: ensure start time is not greater than endTime
+
+        // If the duration of the audio file is finite, update clipDuration to match
+        button.clipDuration = (isFinite(button.$.audio.duration)) ? button.$.audio.duration : button.clipDuration;
+        button.endTime = Math.min(button.endTime, button.clipDuration);
+        button.duration = button.endTime - button.startTime;
+
+        // TODO: Known issue - if the clip duration is provided rather than calculated, 
+        // and then later is calculated, the endTime will be less than the clipDuration 
+        // and therefore will cut out prematurely
+      },
+
+      // on file load error
+      _onError: function() {
+        var button = this;
+        button.classList.add('cantplay');
+        button.title = '';
+        button.error = true;
       },
 
 
@@ -297,20 +319,8 @@ Custom property                             | Description                       
       restart: function(e){
         e.preventDefault();
         var button = this;
-        button.$.audio.currentTime = 0;
+        button.$.audio.currentTime = button.startTime;
         if (!button.isPlaying) button.$.audio.play();
-      },
-
-
-      // when audio file can be played in user's browser
-      _onCanPlay: function() {
-        var button = this;
-        button.canBePlayed = true;
-        if (isFinite(button.$.audio.duration)) button.duration = button.$.audio.duration;
-        button.timeLeft = button.duration;
-   
-        // auto play if specified
-        if (button.autoPlay) button.$.audio.play();
       },
 
 
@@ -322,7 +332,6 @@ Custom property                             | Description                       
         button._startProgressTimer();
       },
 
-
       // starts Timer
       _startProgressTimer: function() {
         var button = this;
@@ -333,14 +342,24 @@ Custom property                             | Description                       
         button.timer = {};
 
         // attempt to update to actual audio time if it's available after playback
-        if (isFinite(button.$.audio.duration)) button.duration = button.$.audio.duration;
+        this._calculateDuration();
+
+        // check playback on tighter schedule...
+        if (button.timer.endReachedInterval) clearInterval(button.endReachedInterval);
+        button.timer.endReachedInterval = setInterval(function() {
+          if (button.$.audio.currentTime > button.endTime) {
+            button.$.audio.pause();
+            button._onEnd();
+          }
+        }, 10); // TODO - hone this interval for performance
+
+        // use requestAnimationFrame
+
+        var interval = 20; // msec        var interval = 20; // msec
         if (button.timer.sliderUpdateInterval) clearInterval(button.timer.sliderUpdateInterval);
-
-        var interval = 20; // msec
-
         button.timer.sliderUpdateInterval = setInterval(function(){
           if (button.isPlaying) {
-            button.currentTime = button.$.audio.currentTime;
+            button.currentTime = button.$.audio.currentTime - button.startTime;
             button.timeLeft = button.duration - button.currentTime;
 
             // snap to the end if close
@@ -359,7 +378,7 @@ Custom property                             | Description                       
           } else {
             clearInterval(button.timer.sliderUpdateInterval);
           }
-        }, interval); // TODO: figure out how to do a better job w/ this interval so it always ends....
+        }, interval); // TODO: figure out how to do a better job w/ this interval so it always ends...
       },
 
 
@@ -376,20 +395,14 @@ Custom property                             | Description                       
         button.ended = true;
         button.isPlaying = false;
 
+        button.$.audio.currentTime = button.startTime;
+
         // after playback is ended, reset visual
         setTimeout(function(){ 
           button.$.progressElapsed.style.transform = 'scaleX(0)'; // hide once again
           button.$.progressRemaining.style.width = 0;
         }, 300);
 
-      },
-
-      // on file load error
-      _onError: function() {
-        var button = this;
-        button.classList.add('cantplay');
-        button.title = '';
-        button.error = true;
       },
 
       // to convert seconds to 'm:ss' format
@@ -419,6 +432,18 @@ Custom property                             | Description                       
         var button = this;
         button.$.title.style.color = newValue;
         button.$.progressElapsed.style.backgroundColor = newValue;
+      },
+
+      _preventDefault: function(e) {
+        // just need to do something here to intercept tap
+        event.preventDefault();
+      },
+
+      _onNeonAnimationFinish: function() {
+        // set the second title to flow out an dfill space
+        var button = this;
+
+        // button.$.titleRemaining.style.width = button.$.base.getBoundingClientRect().width + 'px';
       }
     });
   </script>

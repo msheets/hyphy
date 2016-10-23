@@ -50,12 +50,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _onEditorOpen: function(e, detail) {
         this.$.editor.title = detail.title;
+        this.$.editor.startTime = detail.startTime;
+        this.$.editor.endTime = detail.endTime;
+
+        // uneditable (in thoery)
+        this.$.editor.clipDuration = detail.clipDuration;
+        this.$.editor.volumeData = detail.volumeData;
+        this.$.editor.src = detail.src;
+
         this.$.pages.selected = 1;
+
+        this.$.editor.renderWaveform();
       },
 
       _onEditorClose: function(e, detail) {
-        if (detail.title)
+        if (detail.save) {
           this.$.board.sharedElements.hero.title = detail.title;
+          this.$.board.sharedElements.hero.startTime = detail.startTime;
+          this.$.board.sharedElements.hero.endTime = detail.endTime;
+        }
         this.$.pages.selected = 0;
       }
     });

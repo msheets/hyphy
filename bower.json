@@ -25,7 +25,8 @@
     "polymerfire": "^0.10.0",
     "app-storage": "^0.9.7",
     "vaadin-context-menu": "^0.3.0",
-    "paper-input": "^1.1.20"
+    "paper-input": "^1.1.20",
+    "paper-range-slider": "IftachSadeh/paper-range-slider#^0.2.4"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
