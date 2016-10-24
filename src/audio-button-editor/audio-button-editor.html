@@ -4,6 +4,7 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-range-slider/paper-range-slider.html">
 <link rel="import" href="../../bower_components/iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../waveform/waveform-element.html">
 <link rel="import" href="../waveform-button/waveform-button.html">
 <link rel="import" href="../shared-styles.html">
@@ -77,6 +78,15 @@ Editor for modifying the features of a paper-audio-button
       <paper-input id="title" label="Title" char-counter maxlength="18" value="{{title}}"></paper-input>
       <iron-a11y-keys id="a11y" target="[[target]]" keys="enter" on-keys-pressed="onEnter"></iron-a11y-keys>
       <div id="buttons">
+        <paper-button on-click="_deleteClick">Delete</paper-button>
+        <!-- can't figure out how to do modal without it being hidden on some platforms -->
+        <paper-dialog id="deleteDialog" entry-animation="scale-up-animation" on-iron-overlay-closed="_deleteDialogClosed" no-cancel-on-outside-click no-cancel-on-esc-key>
+          <h2>Are you sure?</h2>
+          <div class="buttons">
+            <paper-button dialog-dismiss>Cancel</paper-button>
+            <paper-button dialog-confirm autofocus>Delete</paper-button>
+          </div>
+        </paper-dialog>
         <paper-button on-click="cancelEdit">Cancel</paper-button>
         <paper-button on-click="saveEdit">Save</paper-button>
       </div>
@@ -89,6 +99,7 @@ Editor for modifying the features of a paper-audio-button
 
       behaviors: [
         Polymer.NeonSharedElementAnimatableBehavior,
+        Polymer.NeonAnimationRunnerBehavior,
         Polymer.IronA11yKeysBehavior
       ],
 
@@ -139,10 +150,19 @@ Editor for modifying the features of a paper-audio-button
                 name: 'hero-animation',
                 id: 'hero',
                 fromPage: this
+              }],
+              'delete': [{
+                name: 'slide-right-animation',
+                node: this
               }]
             };
           }
         }
+      },
+
+      listeners: {
+        // this event is fired when the animation finishes
+        'neon-animation-finish': '_onNeonAnimationFinish'
       },
 
       // remove focus from title if enter is pressed on it
@@ -152,25 +172,55 @@ Editor for modifying the features of a paper-audio-button
         }
       },
 
-      // TODO: determine how to make this automatic
+      // TODO: determine how to make this automatic (e.g. happen when the page opens - or store the drawing)
       renderWaveform: function() {
-        //this.$.waveform.render();
         this.$.waveformButton.renderWaveform();
       },
 
       cancelEdit: function() {
         this.fire('close-editor', {
-          save: false
+          editType: "nop"
         });
       },
 
       saveEdit: function() {
         this.fire('close-editor', {
-          save: true,
+          editType: "save",
           title: this.title,
           startTime: Number(this.startTime),
           endTime: Number(this.endTime)
         });
+      },
+
+      _deleteClick: function(e) {
+        this.$.deleteDialog.open();
+      },
+
+      _deleteDialogClosed: function(e, detail) {
+        if (detail.confirmed) {
+          this.deleteEdit();
+        }
+      },
+
+      deleteEdit: function() {
+        this.delete = true;
+
+        var timing = 300;
+        this.animationConfig['delete'][0].timing = timing;
+        this.playAnimation('delete');
+
+        var self = this;
+        setTimeout(function() {
+          self.fire('close-editor', {
+            editType: "delete"
+          });
+        }, timing);
+      },
+
+      _onNeonAnimationFinish: function(e) {
+        if (this.delete) {
+          this.style.display = 'hidden'; // must be hidden rather than none, which leads to partial keyframes
+        }
       }
     });
   </script>

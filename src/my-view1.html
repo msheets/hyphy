@@ -65,12 +65,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _onEditorClose: function(e, detail) {
-        if (detail.save) {
+        if (detail.editType == "save") {
           this.$.board.sharedElements.hero.title = detail.title;
           this.$.board.sharedElements.hero.startTime = detail.startTime;
           this.$.board.sharedElements.hero.endTime = detail.endTime;
         }
+        
         this.$.pages.selected = 0;
+
+        if (detail.editType == "delete") {
+          this.$.board.removeButton(this.$.board.sharedElements.hero);
+        }
       }
     });
 

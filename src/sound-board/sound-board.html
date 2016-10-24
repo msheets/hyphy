@@ -106,6 +106,10 @@ Soundboard of paper-audio-buttons
         'record-mic-result': '_onNewRecording'
       },
 
+      removeButton: function(node) {
+        this.$.beatPad.removeChild(node);
+      },
+
       _onNewRecording: function(e) {
         var newAudioButton = document.createElement('paper-audio-button');
         newAudioButton.src = e.detail.audioURL;
