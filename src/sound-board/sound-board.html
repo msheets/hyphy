@@ -65,6 +65,13 @@ Soundboard of paper-audio-buttons
     Polymer({
       is: 'sound-board',
 
+      properties: {
+        nodesToScale: {
+          type: Array,
+          value: [],
+        }
+      },
+
       behaviors: [
         Polymer.NeonSharedElementAnimatableBehavior
       ],
@@ -73,8 +80,6 @@ Soundboard of paper-audio-buttons
       properties: {
         animationConfig: {
           value: function() {
-            var buttons = Polymer.dom(this.root).querySelectorAll('paper-audio-button');
-            var buttonsArray = Array.prototype.slice.call(buttons);
             return {
               'entry': [{
                 name: 'hero-animation',
@@ -82,8 +87,7 @@ Soundboard of paper-audio-buttons
                 toPage: this
               }, {
                 name: 'cascaded-animation',
-                animation: 'scale-up-animation',
-                nodes: buttonsArray
+                animation: 'scale-up-animation'
               }],
               'exit': [{
                 name: 'hero-animation',
@@ -122,14 +126,15 @@ Soundboard of paper-audio-buttons
           this.sharedElements = {
             'hero': target
           };
-          var nodesToScale = []; // nodes to scale away
-          var buttons = Polymer.dom(this.root).querySelectorAll('paper-audio-button');
-          for (var button, index = 0; button = buttons[index]; index++) {
+          this.nodesToScale = []; // nodes to scale away
+          this.buttons = Polymer.dom(this.root).querySelectorAll('paper-audio-button');
+          for (var button, index = 0; button = this.buttons[index]; index++) {
             if (button !== event.target) {
-              nodesToScale.push(button);
+              this.nodesToScale.push(button);
             }
           }
-          this.animationConfig['exit'][1].nodes = nodesToScale;
+          this.animationConfig['exit'][1].nodes = this.nodesToScale;
+          this.animationConfig['entry'][1].nodes = this.nodesToScale;
           this.fire('open-editor', {
             title: target.title,
             startTime: target.startTime,
