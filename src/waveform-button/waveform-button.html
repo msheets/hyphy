@@ -118,32 +118,33 @@ Audio button with waveform background
         src: {
           type: String,
           observer: "_srcChanged"
-        },        
-        startTime: {
-          type: Number,
-          value: 0,
-          observer: "_startTimeChange"
-        },
-        endTime: {
-          type: Number,
-          value: Infinity,
-          observer: "_endTimeChange"
-        },
-        clipDuration: {
-          type: Number,
-          value: Infinity
-        },
-        volumeData: {
-          type: Array,
-          value: []
-        },  
+        },    
         // for streams, we cannot detect duration, so rely on user to return
         // clipDuration represents the duration of the clip in it's entirity
         clipDuration: {
           type: Number,
-          value: Infinity
+          value: Infinity,
+          notify: true          
         },
-        
+        volumeData: {
+          type: Array,
+          value: []
+        },                 
+
+        // variables
+        startTime: {
+          type: Number,
+          value: 0,
+          observer: "_startTimeChange",
+          notify: true
+        },
+        endTime: {
+          type: Number,
+          value: Infinity,
+          observer: "_endTimeChange",
+          notify: true
+        },
+
         // this is current time with respect to duration, not clipDuration
         error: {
           type: Boolean
@@ -204,12 +205,23 @@ Audio button with waveform background
       _calculateDuration: function() {
         var button = this;
 
-        // TODO: ensure start time is not greater than endTime
-
-        // If the duration of the audio file is finite, update clipDuration to match
-        //button.clipDuration = (isFinite(button.$.audio.duration)) ? button.$.audio.duration : button.clipDuration;
+        // Calculate the normal duration
         button.endTime = Math.min(button.endTime, button.clipDuration);
         button.duration = button.endTime - button.startTime;
+
+        // TODO: ensure start time is not greater than endTime
+
+        // If the duration of the audio file is finite (has been calculated), update clipDuration to match
+        if (isFinite(button.$.audio.duration)) {
+          var oldClipDuration = button.clipDuration;
+          button.clipDuration = button.$.audio.duration;
+      
+          // scale appropriate fields
+          var scalar = button.clipDuration / oldClipDuration;
+          button.duration *= scalar;
+          button.startTime *= scalar;
+          button.endTime = button.startTime + button.duration;
+        }
 
         // TODO: Known issue - if the clip duration is provided rather than calculated, 
         // and then later is calculated, the endTime will be less than the clipDuration 
@@ -264,6 +276,7 @@ Audio button with waveform background
         button.timer = {};
 
         // attempt to update to actual audio time if it's available after playback
+        // calculate duration values
         this._calculateDuration();
 
         // check playback on tighter schedule...
@@ -301,12 +314,6 @@ Audio button with waveform background
             }
 
             var clipPercentagePlayed = button.currentTime / button.clipDuration;
-
-            // TODO - address the changing duration issue - could do this by removing #'s
-            console.log("time left " + button.timeLeft);
-            console.log("current time: " + button.currentTime);
-            console.log("clip percentage: " + clipPercentagePlayed);
-            console.log("clip duration: " + button.clipDuration);
 
             button.$.progressElapsed.style.width = clipPercentagePlayed * button.$.base.getBoundingClientRect().width + 'px';
             button.$.progressRemaining.style.width = clipPercentagePlayed * button.$.base.getBoundingClientRect().width + 'px';
@@ -353,21 +360,30 @@ Audio button with waveform background
         }
       },
 
-      _startTimeChange: function(oldValue, newValue) {
+      _startTimeChange: function(newValue, oldValue) {
         var button = this;
 
         var percentageStart = newValue / button.clipDuration;
-        button.$.preStart.style.width = percentageStart * button.$.base.getBoundingClientRect().width + 'px';
+        var pixelStart = percentageStart * button.$.base.getBoundingClientRect().width;
+        if (pixelStart < 2) pixelStart = 0;
+        button.$.preStart.style.width = pixelStart + 'px';
       },
 
-      _endTimeChange: function(oldValue, newValue) {
+      _endTimeChange: function(newValue, oldValue) {
         var button = this;
 
         var timeLeft = button.clipDuration - newValue;
-        var percentageEndBegin = newValue / button.clipDuration;
-        var percentageEnd = timeLeft / button.clipDuration;
-        button.$.postEnd.style.transform = 'translateX('+ (percentageEndBegin * button.$.base.getBoundingClientRect().width ) +'px)';
-        button.$.postEnd.style.width = timeLeft * button.$.base.getBoundingClientRect().width + 'px';
+        var percentageLeft = timeLeft / button.clipDuration;
+        var percentageEnd = newValue / button.clipDuration;
+        var pixelEnd = percentageEnd * button.$.base.getBoundingClientRect().width;        
+        var pixelLeft = percentageLeft * button.$.base.getBoundingClientRect().width;
+        if (pixelLeft < 2) {
+          pixelLeft = 0;
+          pixelEnd = button.$.base.getBoundingClientRect().width;
+        }
+
+        button.$.postEnd.style.transform = 'translateX('+ pixelEnd +'px)';
+        button.$.postEnd.style.width = pixelLeft + 'px';
       },
 
       // If color property is changed,
