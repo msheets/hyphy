@@ -1,0 +1,111 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<!--
+`waveform-element`
+
+
+@demo demo/index.html 
+-->
+
+<dom-module id="waveform-element">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      #waveformContainer {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    <div id="waveformContainer">
+      <canvas id="waveform"></canvas>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'waveform-element',
+
+      properties: {
+        volumeData: {
+          type: Array,
+          value: [],
+        },
+        // hexidecimal string
+        foregroundColor: {
+          type: String,
+          value: "#000000"
+        },
+        foregroundOpacity: {
+          type: Number,
+          value: 0.2
+        }
+      },
+
+      render: function(width, height) {
+        this.waveCanvas = this.$.waveform;
+        this.waveCtx = this.waveCanvas.getContext('2d');
+
+        // Initialize Sizing
+        var dPR = window.devicePixelRatio || 1;
+
+        this.waveWidth = width || this.waveCanvas.parentElement.offsetWidth;
+        this.waveHeight = height || this.waveCanvas.parentElement.offsetHeight;
+
+        // Scale the backing store by the dPR.
+        this.waveCanvas.width = this.waveWidth * dPR;
+        this.waveCanvas.height = this.waveHeight * dPR;
+
+        // Scale it back down to the width and height we want in logical pixels.
+        this.waveCanvas.style.width = this.waveWidth + 'px';
+        this.waveCanvas.style.height = this.waveHeight + 'px';
+
+        // Account for any upscaling by applying a single scale transform.
+        this.waveCtx.scale(dPR, dPR);
+
+        // Intialize
+        if (this.volumeData) {
+          var padding = 5;
+          var maxHeight = this.waveHeight - (2 * padding);
+
+          this.waveCtx.clearRect(0, 0, this.waveWidth, this.waveHeight);
+          this.waveCtx.save();
+          this.waveCtx.translate(0, this.waveHeight * 0.5);
+          this.waveCtx.beginPath();
+          this.waveCtx.globalAlpha = this.foregroundOpacity;
+          this.waveCtx.fillStyle= this.foregroundColor;
+
+          // need to draw in the middle of a slice...
+          // draw bottom
+          var h = 0;
+          for (var d = 0; d < this.volumeData.length; d++) {
+            var x = ((d + 0.5) / this.volumeData.length) * this.waveWidth;
+            h = this.volumeData[d] * maxHeight * 0.5;
+            h = Math.max(1, h);
+            this.waveCtx.lineTo(x, -h);
+          }
+          // finish line
+          this.waveCtx.lineTo(this.waveWidth, -h);
+          this.waveCtx.lineTo(this.waveWidth, h);
+
+          // draw top
+          for (d = this.volumeData.length - 1; d >= 0; d--) {
+            var x = ((d + 0.5) / this.volumeData.length) * this.waveWidth;
+            h = this.volumeData[d] * maxHeight * 0.5;
+            h = Math.max(1, h);
+            this.waveCtx.lineTo(x, h);
+          }
+          this.waveCtx.lineTo(0, h);
+          this.waveCtx.lineTo(0, -h);
+
+          this.waveCtx.closePath();
+          this.waveCtx.fill();
+          this.waveCtx.restore();
+        }   
+      }
+    });
+  </script>
+</dom-module>

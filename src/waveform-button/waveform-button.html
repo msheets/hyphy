@@ -1,0 +1,357 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-ripple/paper-ripple.html">
+
+<!--
+`waveform-button`
+Audio button with waveform background
+
+@demo demo/index.html 
+-->
+
+<!-- TODO: combine with paper-audio-button? -->
+
+<dom-module id="waveform-button">
+  <template>
+    <style>
+      :host {
+        display: block;
+
+        box-sizing: border-box;
+
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */   
+      }
+
+
+      paper-button {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        background: rgba(255,255,255,.75);
+        margin: 0;
+        padding: 0;
+      }
+
+      #waveform {
+        width: 100%;
+      }
+
+      .fit {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+      #waveform,
+      #progressRemaining {
+        /* Vertical centering */
+        display: flex;
+        justify-content:center;
+        align-content:center;
+        flex-direction:column;
+
+        text-align: center;
+        line-height: 1.2em;
+        font-size: 24px;
+        word-wrap: break-word;
+
+        pointer-events: none;
+      }
+
+      #progressRemaining {
+        width: 0px;
+        z-index: 5;
+        color: #fff;
+        overflow: hidden;
+      }
+
+      #progressElapsed {
+        width: 0px;
+        transform-origin: left;
+        /* background: var(--paper-audio-button-color, blueviolet); */
+        background: #68EFAD;
+      }
+
+    </style>
+  
+    <paper-button id="base">
+      <!-- Audio HTML5 element -->
+      <waveform-element id="waveform" volume-data="{{volumeData}}"></waveform-element>
+      <audio id="audio" src="{{ src }}" preload="auto"></audio>
+
+      <!-- Progress bar -->
+      <div id="progressElapsed" class="fit"></div>
+      <div id="progressRemaining" class="fit">
+        <waveform-element id="waveformRemaining" volume-data="{{volumeData}}" foreground-color="#8A2BE2" foreground-opacity="1"></waveform-element>
+      </div>
+
+      <!-- Error 
+      <iron-icon id="error" icon="error-outline" class="fit" hidden$="{{ !error }}"></iron-icon>-->
+    </paper-button>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'waveform-button',
+
+      properties: {
+        src: {
+          type: String,
+          observer: "_srcChanged"
+        },        
+        startTime: {
+          type: Number,
+          value: 0
+        },
+        endTime: {
+          type: Number,
+          value: Infinity
+        },
+        clipDuration: {
+          type: Number,
+          value: Infinity
+        },
+        volumeData: {
+          type: Array,
+          value: []
+        },  
+        // for streams, we cannot detect duration, so rely on user to return
+        // clipDuration represents the duration of the clip in it's entirity
+        clipDuration: {
+          type: Number,
+          value: Infinity
+        },
+        
+        // this is current time with respect to duration, not clipDuration
+        error: {
+          type: Boolean
+        },
+       
+        // duration measures the calculated duration based off of start and end time
+        duration: {
+          type: Number,
+          value: Infinity
+        },
+         currentTime: {
+          type: Number,
+          value: 0,
+          notify: true
+        },
+        timeLeft: {
+          type: Number,
+          value: 0
+        }  
+      },
+
+      // Register event listeners
+      listeners: {
+        'audio.loadedmetadata'  : '_onCanPlay',
+        'audio.error'           : '_onError',
+        'audio.playing'         : '_onPlaying',
+        'audio.pause'           : '_onPause',
+        'audio.ended'           : '_onEnd',
+        'tap'                   : 'restart'
+      },
+
+      // When element is created
+      ready: function() {
+        var button = this;
+
+        button.$.audio.load();
+
+        // Initialize private variables
+        button.canBePlayed = false;
+        button.isPlaying = false;
+        button.ended = false;
+        button.error = false;
+      },
+
+      // when audio file can be played in user's browser
+      _onCanPlay: function() {
+        var button = this;
+
+        button.canBePlayed = true;
+        this._calculateDuration();
+        button.timeLeft = button.duration;
+   
+        // auto play if specified
+        if (button.autoPlay) button.$.audio.play();
+      },
+
+      // if one changes we need to update
+      _calculateDuration: function() {
+        var button = this;
+
+        // TODO: ensure start time is not greater than endTime
+
+        // If the duration of the audio file is finite, update clipDuration to match
+        //button.clipDuration = (isFinite(button.$.audio.duration)) ? button.$.audio.duration : button.clipDuration;
+        button.endTime = Math.min(button.endTime, button.clipDuration);
+        button.duration = button.endTime - button.startTime;
+
+        // TODO: Known issue - if the clip duration is provided rather than calculated, 
+        // and then later is calculated, the endTime will be less than the clipDuration 
+        // and therefore will cut out prematurely
+      },
+
+      // on file load error
+      _onError: function() {
+        var button = this;
+        button.classList.add('cantplay');
+        button.title = '';
+        button.error = true;
+      },
+
+
+      // Play/Pause controls
+      playPause: function(e){
+        e.preventDefault();
+        var button = this;
+
+        if (button.canBePlayed) {
+          return button.isPlaying ? button.$.audio.pause() : button.$.audio.play();
+        }
+      },
+
+
+      // Restart
+      restart: function(e){
+        e.preventDefault();
+        var button = this;
+        button.$.audio.currentTime = button.startTime;
+        if (!button.isPlaying) button.$.audio.play();
+      },
+
+
+      // when Player starts playing
+      _onPlaying: function() {
+        var button = this;
+        button.ended = false;
+        button.isPlaying = true;
+        button._startProgressTimer();
+      },
+
+      // TODO user the animation frame function
+      // starts Timer
+      _startProgressTimer: function() {
+        var button = this;
+
+        // can we extract this out for efficiency
+        button.$.waveformRemaining.style.width = button.$.base.getBoundingClientRect().width + 'px';
+
+        button.timer = {};
+
+        // attempt to update to actual audio time if it's available after playback
+        this._calculateDuration();
+
+        // check playback on tighter schedule...
+        if (button.timer.endReachedInterval) clearInterval(button.endReachedInterval);
+        button.timer.endReachedInterval = setInterval(function() {
+          if (button.$.audio.currentTime > button.endTime) {
+            button.$.audio.pause();
+            button._onEnd();
+          }
+        }, 10); // TODO - hone this interval for performance
+
+        // use requestAnimationFrame
+
+        // note: do not go past 0
+        // need to do half measurements to match waveform....
+
+        var startPercentage = (button.startTime) / button.clipDuration;
+        var translateX = startPercentage * button.$.base.getBoundingClientRect().width;
+        button.$.progressElapsed.style.transform = 'translateX('+ translateX +'px)';
+        button.$.progressRemaining.style.transform = 'translateX(' + translateX + 'px)';
+        button.$.waveformRemaining.style.transform = 'translateX(' + (-1 * translateX) + 'px)'; // TODO - better technique
+
+        var interval = 20; // msec
+        if (button.timer.sliderUpdateInterval) clearInterval(button.timer.sliderUpdateInterval);
+        button.timer.sliderUpdateInterval = setInterval(function(){
+          if (button.isPlaying) {
+            button.currentTime = button.$.audio.currentTime - button.startTime;
+            button.timeLeft = button.duration - button.currentTime;
+
+            // snap to the end if close
+            // TODO Need to clip to the end if feasible.... - doesn't always happen
+            if (button.timeLeft < (interval / 1000)) {
+              button.currentTime = button.duration;
+              button.timeLeft = 0;
+            }
+
+            var clipPercentagePlayed = button.currentTime / button.clipDuration;
+
+            // TODO - address the changing duration issue - could do this by removing #'s
+            console.log("time left " + button.timeLeft);
+            console.log("current time: " + button.currentTime);
+            console.log("clip percentage: " + clipPercentagePlayed);
+            console.log("clip duration: " + button.clipDuration);
+
+            button.$.progressElapsed.style.width = clipPercentagePlayed * button.$.base.getBoundingClientRect().width + 'px';
+            button.$.progressRemaining.style.width = clipPercentagePlayed * button.$.base.getBoundingClientRect().width + 'px';
+
+          } else {
+            clearInterval(button.timer.sliderUpdateInterval);
+          }
+        }, interval); // TODO: figure out how to do a better job w/ this interval so it always ends...*/
+      },
+
+
+      // when Player is paused
+      _onPause: function() {
+        var button = this;
+        button.isPlaying = false;
+      },
+
+
+      // when Player ended playing an audio file
+      _onEnd: function() {
+        var button = this;
+        button.ended = true;
+        button.isPlaying = false;
+
+        button.$.audio.currentTime = button.startTime;
+
+        // after playback is ended, reset visual
+        setTimeout(function(){ 
+          button.$.progressElapsed.style.width = 0; // hide once again
+          button.$.progressRemaining.style.width = 0;
+        }, 300);
+
+      },
+
+      // If src is changed when track is playing,
+      // pause the track and start playing a new src
+      _srcChanged: function(oldValue, newValue) {
+        var button = this;
+
+        if (button.isPlaying) {
+          button.$.audio.pause();
+          button.$.audio.currentTime = 0;
+          button.$.audio.play();
+        }
+      },
+
+      // If color property is changed,
+      // update all the nodes with the new accent color
+      _changeColor: function(newValue) {
+        var button = this;
+        button.$.title.style.color = newValue;
+        button.$.progressElapsed.style.backgroundColor = newValue;
+      },
+
+      renderWaveform: function() {
+        // TODO: this is a bit of a hacky work around...
+        this.$.waveform.render(this.$.base.offsetWidth, this.$.base.offsetHeight);
+        this.$.waveformRemaining.render(this.$.base.offsetWidth, this.$.base.offsetHeight);
+      }
+    });
+  </script>
+</dom-module>
