@@ -359,8 +359,6 @@ Audio button with waveform background
       _startTimeChange: function(newValue, oldValue) {
         var button = this;
 
-        console.log("New StartTime: " + newValue);
-
         var percentageStart = newValue / button.clipDuration;
         var pixelStart = percentageStart * button.$.base.offsetWidth;
         if (pixelStart < 2) pixelStart = 0;
