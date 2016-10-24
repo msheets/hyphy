@@ -113,6 +113,11 @@ Custom property                             | Description                       
         background: rgba(255,255,255,.75);
       }
 
+      /* Overwrite bolding */
+      paper-button[raised].keyboard-focus {
+        font-weight: normal;
+      }
+
       paper-ripple {
         color: var(--paper-audio-button-color, blueviolet);
       }
@@ -144,11 +149,24 @@ Custom property                             | Description                       
         left: 0;
       }
 
+      /* figure out if this is too janky */
+       #title {
+        position: absolute;
+        top: 0.4em;
+        right: 0.4em;
+        bottom: 0.4em;
+        left: 0.4em;
+      }      
+
+      #titleRemaining {
+        margin-left: 0.4em;
+      }
+
     </style>
 
     <paper-button id="base" raised>
     	<!-- Title -->      
-	    <div id="title" class="fit">{{ title }}</div>
+	    <div id="title">{{ title }}</div>
         
       <!-- Audio HTML5 element -->
       <audio id="audio" src="{{ src }}" preload="auto"></audio>
@@ -363,7 +381,11 @@ Custom property                             | Description                       
         var button = this;
 
         // can we extrac this out for efficiency
-        button.$.titleRemaining.style.width = button.$.base.getBoundingClientRect().width + 'px';
+        console.log("base bounding: " + button.$.base.getBoundingClientRect().width);
+        console.log("base offset: " + button.$.base.offsetWidth);
+        console.log("title bounding: " + button.$.title.getBoundingClientRect().width);
+        console.log("title offset: " + button.$.title.offsetWidth);                        
+        button.$.titleRemaining.style.width = button.$.title.getBoundingClientRect().width + 'px';
 
         button.timer = {};
 
@@ -427,8 +449,8 @@ Custom property                             | Description                       
         setTimeout(function(){ 
           button.$.progressElapsed.style.transform = 'scaleX(0)'; // hide once again
           button.$.progressRemaining.style.width = 0;
-        }, 300);
-
+          button.blur(); // remove focus from button - TODO: look into doing this earlier
+        }, 100);
       },
 
       // to convert seconds to 'm:ss' format
