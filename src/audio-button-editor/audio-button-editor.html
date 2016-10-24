@@ -64,8 +64,6 @@ Editor for modifying the features of a paper-audio-button
       <waveform-button id="waveformButton" volume-data="{{volumeData}}" src="{{src}}" start-time="{{startTime}}" end-time="{{endTime}}" clip-duration="{{clipDuration}}"></waveform-button>
       <paper-range-slider style="width: 100%;" id="range" min="0" max="[[clipDuration]]" pin value-diff-min="0.2" step="0.01" value-min="{{startTime}}" value-max="{{endTime}}"></paper-range-slider>
       <paper-input id="title" label="Title" char-counter maxlength="18" value="{{title}}"></paper-input>
-      <paper-input id="startTime" label="Start Time" type="number" value="{{startTime}}"></paper-input>
-      <paper-input id="endTime" label="End Time" type="number" value="{{endTime}}"></paper-input>
       <div class="buttons">
         <paper-button on-click="cancelEdit">Cancel</paper-button>
         <paper-button on-click="saveEdit">Save</paper-button>

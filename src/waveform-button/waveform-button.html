@@ -78,6 +78,14 @@ Audio button with waveform background
         background: #68EFAD;
       }
 
+      #preStart,
+      #postEnd {
+        width: 0px;
+        transform-origin: left;
+        background: #000000;
+        opacity: 0.1;
+      }
+
     </style>
   
     <paper-button id="base">
@@ -85,11 +93,15 @@ Audio button with waveform background
       <waveform-element id="waveform" volume-data="{{volumeData}}"></waveform-element>
       <audio id="audio" src="{{ src }}" preload="auto"></audio>
 
+      <div id="preStart" class="fit"></div>
+
       <!-- Progress bar -->
       <div id="progressElapsed" class="fit"></div>
       <div id="progressRemaining" class="fit">
         <waveform-element id="waveformRemaining" volume-data="{{volumeData}}" foreground-color="#8A2BE2" foreground-opacity="1"></waveform-element>
       </div>
+
+      <div id="postEnd" class="fit"></div>
 
       <!-- Error 
       <iron-icon id="error" icon="error-outline" class="fit" hidden$="{{ !error }}"></iron-icon>-->
@@ -109,11 +121,13 @@ Audio button with waveform background
         },        
         startTime: {
           type: Number,
-          value: 0
+          value: 0,
+          observer: "_startTimeChange"
         },
         endTime: {
           type: Number,
-          value: Infinity
+          value: Infinity,
+          observer: "_endTimeChange"
         },
         clipDuration: {
           type: Number,
@@ -337,6 +351,23 @@ Audio button with waveform background
           button.$.audio.currentTime = 0;
           button.$.audio.play();
         }
+      },
+
+      _startTimeChange: function(oldValue, newValue) {
+        var button = this;
+
+        var percentageStart = newValue / button.clipDuration;
+        button.$.preStart.style.width = percentageStart * button.$.base.getBoundingClientRect().width + 'px';
+      },
+
+      _endTimeChange: function(oldValue, newValue) {
+        var button = this;
+
+        var timeLeft = button.clipDuration - newValue;
+        var percentageEndBegin = newValue / button.clipDuration;
+        var percentageEnd = timeLeft / button.clipDuration;
+        button.$.postEnd.style.transform = 'translateX('+ (percentageEndBegin * button.$.base.getBoundingClientRect().width ) +'px)';
+        button.$.postEnd.style.width = timeLeft * button.$.base.getBoundingClientRect().width + 'px';
       },
 
       // If color property is changed,
