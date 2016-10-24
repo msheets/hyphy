@@ -222,10 +222,6 @@ Audio button with waveform background
           button.startTime *= scalar;
           button.endTime = button.startTime + button.duration;
         }
-
-        // TODO: Known issue - if the clip duration is provided rather than calculated, 
-        // and then later is calculated, the endTime will be less than the clipDuration 
-        // and therefore will cut out prematurely
       },
 
       // on file load error
@@ -350,7 +346,7 @@ Audio button with waveform background
 
       // If src is changed when track is playing,
       // pause the track and start playing a new src
-      _srcChanged: function(oldValue, newValue) {
+      _srcChanged: function(newValue, oldValue) {
         var button = this;
 
         if (button.isPlaying) {
@@ -363,8 +359,10 @@ Audio button with waveform background
       _startTimeChange: function(newValue, oldValue) {
         var button = this;
 
+        console.log("New StartTime: " + newValue);
+
         var percentageStart = newValue / button.clipDuration;
-        var pixelStart = percentageStart * button.$.base.getBoundingClientRect().width;
+        var pixelStart = percentageStart * button.$.base.offsetWidth;
         if (pixelStart < 2) pixelStart = 0;
         button.$.preStart.style.width = pixelStart + 'px';
       },
@@ -375,11 +373,11 @@ Audio button with waveform background
         var timeLeft = button.clipDuration - newValue;
         var percentageLeft = timeLeft / button.clipDuration;
         var percentageEnd = newValue / button.clipDuration;
-        var pixelEnd = percentageEnd * button.$.base.getBoundingClientRect().width;        
-        var pixelLeft = percentageLeft * button.$.base.getBoundingClientRect().width;
+        var pixelEnd = percentageEnd * button.$.base.offsetWidth;        
+        var pixelLeft = percentageLeft * button.$.base.offsetWidth;
         if (pixelLeft < 2) {
           pixelLeft = 0;
-          pixelEnd = button.$.base.getBoundingClientRect().width;
+          pixelEnd = button.$.base.offsetWidth;
         }
 
         button.$.postEnd.style.transform = 'translateX('+ pixelEnd +'px)';
@@ -394,10 +392,18 @@ Audio button with waveform background
         button.$.progressElapsed.style.backgroundColor = newValue;
       },
 
+      // TODO identify difference w/ offset width
       renderWaveform: function() {
+        // calculate duration in case it has been updated in the interim
+        this._calculateDuration();
+
         // TODO: this is a bit of a hacky work around...
         this.$.waveform.render(this.$.base.offsetWidth, this.$.base.offsetHeight);
         this.$.waveformRemaining.render(this.$.base.offsetWidth, this.$.base.offsetHeight);
+
+        // Start/end times are size dependent as well
+        this._startTimeChange(this.startTime);
+        this._endTimeChange(this.endTime);
       }
     });
   </script>

@@ -250,8 +250,27 @@ Custom property                             | Description                       
         'audio.pause'           : '_onPause',
         'audio.ended'           : '_onEnd',
         'vaadin-long-touch'     : '_preventDefault', // long touch should not do anything here... - this porbably isn't
-        'tap'                   : 'restart',
+        'down'                  : '_buttonPressed',
+        'up'                    : '_buttonReleased',
         'neon-animation-finish' : '_onNeonAnimationFinish'
+      },
+
+      // some how abstract this long-touch behavior out.... - probably a behavior?
+      _buttonPressed: function(e) {
+        this.longTouch = false;
+        this.buttonReleased = false;
+        this.debounce("buttonPressed", function() {
+          if (this.buttonReleased) return;
+          this.longTouch = true;
+          this.fire('long-touch'); // fire w/o waiting for release
+        }, 1000); //default setting for Android and iOS.
+      },
+
+      _buttonReleased: function(e) {
+        this.buttonReleased = true;
+        if (this.longTouch) return;
+
+        this.restart();
       },
 
       // When element is created
@@ -285,14 +304,23 @@ Custom property                             | Description                       
 
         // TODO: ensure start time is not greater than endTime
 
-        // If the duration of the audio file is finite, update clipDuration to match
-        button.clipDuration = (isFinite(button.$.audio.duration)) ? button.$.audio.duration : button.clipDuration;
+        // Calculate the normal duration
         button.endTime = Math.min(button.endTime, button.clipDuration);
         button.duration = button.endTime - button.startTime;
 
-        // TODO: Known issue - if the clip duration is provided rather than calculated, 
-        // and then later is calculated, the endTime will be less than the clipDuration 
-        // and therefore will cut out prematurely
+        // TODO: ensure start time is not greater than endTime
+
+        // If the duration of the audio file is finite (has been calculated), update clipDuration to match
+        if (isFinite(button.$.audio.duration)) {
+          var oldClipDuration = button.clipDuration;
+          button.clipDuration = button.$.audio.duration;
+      
+          // scale appropriate fields
+          var scalar = button.clipDuration / oldClipDuration;
+          button.duration *= scalar;
+          button.startTime *= scalar;
+          button.endTime = button.startTime + button.duration;
+        }
       },
 
       // on file load error
@@ -305,8 +333,7 @@ Custom property                             | Description                       
 
 
       // Play/Pause controls
-      playPause: function(e){
-        e.preventDefault();
+      playPause: function(){
         var button = this;
 
         if (button.canBePlayed) {
@@ -316,8 +343,7 @@ Custom property                             | Description                       
 
 
       // Restart
-      restart: function(e){
-        e.preventDefault();
+      restart: function(){
         var button = this;
         button.$.audio.currentTime = button.startTime;
         if (!button.isPlaying) button.$.audio.play();

@@ -3,7 +3,6 @@
 <link rel="import" href="../paper-audio-button/paper-audio-button.html">
 <link rel="import" href="../record-mic/record-mic.html">
 <link rel="import" href="../shared-styles.html">
-<link rel="import" href="../../bower_components/vaadin-context-menu/vaadin-long-touch.html">
 
 <!--
 `sound-board`
@@ -107,7 +106,7 @@ Soundboard of paper-audio-buttons
         newAudioButton.src = e.detail.audioURL;
         newAudioButton.clipDuration = e.detail.estDuration - 0.1; // better to understimate and have progress finish early than never finish
         newAudioButton.volumeData = e.detail.volumeData;
-        this.listen(newAudioButton, 'vaadin-long-touch', '_onClick'); // set up listener
+        this.listen(newAudioButton, 'long-touch', '_onClick'); // set up listener
 
         // visibility???
         this.$.beatPad.appendChild(newAudioButton);
