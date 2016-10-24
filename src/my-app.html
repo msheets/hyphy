@@ -48,8 +48,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       a { -webkit-user-select: none !important; }
 
       app-header {
-        color: #fff;
-        background-color: var(--app-primary-color);
+        /* color: #fff;
+        background-color: var(--app-primary-color); */
       }
       app-header paper-icon-button {
         --paper-icon-button-ink-color: white;
@@ -140,6 +140,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       observers: [
         '_routePageChanged(routeData.page)'
       ],
+
+      // TODO: identify why manifest setting wasn't working
+      ready: function() {
+        var promise = screen.orientation.lock('portrait');
+        promise.catch(function(err) {
+          console.log("Error in screen.orientation.lock: " + err);
+        });
+      },
 
       _routePageChanged: function(page) {
         this.page = page || 'my-view1';
