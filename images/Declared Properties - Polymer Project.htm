@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)https://www.polymer-project.org/1.0/docs/devguide/properties -->
+<html itemscope="" itemtype="http://schema.org/Organization" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>body {transition: opacity ease-in 0.2s; } 
+body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relative; } 
+</style>
+<title>Declared Properties - Polymer Project</title>
+
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+<meta name="google-site-verification" content="k0e8DrbD40s54xHNBqwIsRrSSAkZoprwtEYDnNY06bU">
+<meta name="google-site-verification" content="pnjjbQFvjPwaWhEXY6nSyaS9iyghmH-M_yLHBveDX2M">
+<meta itemprop="image" content="https://www.polymer-project.org/images/logos/p-logo-32.png">
+<meta itemprop="description" content="Polymer is a library that uses the latest web technologies to let you create custom HTML elements. Build anything from a button to a complete application as an encapsulated, reusable component that works across desktop and mobile.">
+<meta name="theme-color" content="#1e88e5">
+<link rel="manifest" href="https://www.polymer-project.org/manifest.json">
+
+<link rel="publisher" href="https://plus.google.com/107187849809354688692">
+<link rel="shortcut icon" href="https://www.polymer-project.org/images/logos/p-logo-32.png">
+<link rel="stylesheet" href="./Declared Properties - Polymer Project_files/css">
+
+<link rel="stylesheet" href="./Declared Properties - Polymer Project_files/site.css">
+<script async="" src="./Declared Properties - Polymer Project_files/analytics.js"></script><script src="./Declared Properties - Polymer Project_files/webcomponents-lite.min.js" async=""></script>
+<!-- Load hljs before pw-shell in elements.html tries to use it. -->
+<script src="./Declared Properties - Polymer Project_files/highlight.js" async=""></script>
+
+<script>
+  window.Polymer = window.Polymer || {dom: 'shadow', lazyRegister: true};
+</script>
+
+<link rel="import" href="https://www.polymer-project.org/elements/elements.html">
+
+<style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">.layout.horizontal, .layout.vertical {
+  display:-ms-flexbox;display:-webkit-flex;display:flex;
+}
+
+.layout.inline {
+  display:-ms-inline-flexbox;display:-webkit-inline-flex;display:inline-flex;
+}
+
+.layout.horizontal {
+  -ms-flex-direction:row;-webkit-flex-direction:row;flex-direction:row;
+}
+
+.layout.vertical {
+  -ms-flex-direction:column;-webkit-flex-direction:column;flex-direction:column;
+}
+
+.layout.wrap {
+  -ms-flex-wrap:wrap;-webkit-flex-wrap:wrap;flex-wrap:wrap;
+}
+
+.layout.center, .layout.center-center {
+  -ms-flex-align:center;-webkit-align-items:center;align-items:center;
+}
+
+.layout.center-justified, .layout.center-center {
+  -ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;
+}
+
+.flex {
+  -ms-flex:1 1 0.000000001px;-webkit-flex:1;flex:1;-webkit-flex-basis:0.000000001px;flex-basis:0.000000001px;
+}
+
+.flex-auto {
+  -ms-flex:1 1 auto;-webkit-flex:1 1 auto;flex:1 1 auto;
+}
+
+.flex-none {
+  -ms-flex:none;-webkit-flex:none;flex:none;
+}
+
+.layout.start {
+  -ms-flex-align:start;-webkit-align-items:flex-start;align-items:flex-start;
+}
+
+.layout.center, .layout.center-center {
+  -ms-flex-align:center;-webkit-align-items:center;align-items:center;
+}
+
+.layout.end {
+  -ms-flex-align:end;-webkit-align-items:flex-end;align-items:flex-end;
+}
+
+.layout.baseline {
+  -ms-flex-align:baseline;-webkit-align-items:baseline;align-items:baseline;
+}
+
+.layout.start-justified {
+  -ms-flex-pack:start;-webkit-justify-content:flex-start;justify-content:flex-start;
+}
+
+.layout.center-justified, .layout.center-center {
+  -ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;
+}
+
+.layout.end-justified {
+  -ms-flex-pack:end;-webkit-justify-content:flex-end;justify-content:flex-end;
+}
+
+.layout.around-justified {
+  -ms-flex-pack:distribute;-webkit-justify-content:space-around;justify-content:space-around;
+}
+
+.layout.justified {
+  -ms-flex-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;
+}
+
+.self-start {
+  -ms-align-self:flex-start;-webkit-align-self:flex-start;align-self:flex-start;
+}
+
+.self-center {
+  -ms-align-self:center;-webkit-align-self:center;align-self:center;
+}
+
+.self-end {
+  -ms-align-self:flex-end;-webkit-align-self:flex-end;align-self:flex-end;
+}
+
+.self-stretch {
+  -ms-align-self:stretch;-webkit-align-self:stretch;align-self:stretch;
+}
+
+.self-baseline {
+  -ms-align-self:baseline;-webkit-align-self:baseline;align-self:baseline;
+}
+
+.layout.start-aligned {
+  -ms-flex-line-pack:start;-ms-align-content:flex-start;-webkit-align-content:flex-start;align-content:flex-start;
+}
+
+.layout.end-aligned {
+  -ms-flex-line-pack:end;-ms-align-content:flex-end;-webkit-align-content:flex-end;align-content:flex-end;
+}
+
+.layout.center-aligned {
+  -ms-flex-line-pack:center;-ms-align-content:center;-webkit-align-content:center;align-content:center;
+}
+
+.layout.between-aligned {
+  -ms-flex-line-pack:justify;-ms-align-content:space-between;-webkit-align-content:space-between;align-content:space-between;
+}
+
+.layout.around-aligned {
+  -ms-flex-line-pack:distribute;-ms-align-content:space-around;-webkit-align-content:space-around;align-content:space-around;
+}
+
+.flex, .flex-1 {
+  -ms-flex:1 1 0.000000001px;-webkit-flex:1;flex:1;-webkit-flex-basis:0.000000001px;flex-basis:0.000000001px;
+}
+
+.flex-2 {
+  -ms-flex:2;-webkit-flex:2;flex:2;
+}
+
+.flex-3 {
+  -ms-flex:3;-webkit-flex:3;flex:3;
+}
+
+.flex-4 {
+  -ms-flex:4;-webkit-flex:4;flex:4;
+}
+
+.flex-5 {
+  -ms-flex:5;-webkit-flex:5;flex:5;
+}
+
+.flex-6 {
+  -ms-flex:6;-webkit-flex:6;flex:6;
+}
+
+.flex-7 {
+  -ms-flex:7;-webkit-flex:7;flex:7;
+}
+
+.flex-8 {
+  -ms-flex:8;-webkit-flex:8;flex:8;
+}
+
+.flex-9 {
+  -ms-flex:9;-webkit-flex:9;flex:9;
+}
+
+.flex-10 {
+  -ms-flex:10;-webkit-flex:10;flex:10;
+}
+
+.flex-11 {
+  -ms-flex:11;-webkit-flex:11;flex:11;
+}
+
+.flex-12 {
+  -ms-flex:12;-webkit-flex:12;flex:12;
+}
+
+</style></head>
+<body class="fullbleed">
+  <pw-shell class="right-nav">
+      <style>
+    a.site-nav {
+      color: #6b6b6b;
+      background: white;
+      border-bottom: 1px solid #eaedef;
+      padding: 4px 4px 4px 30px;
+      font-weight: 300;
+      font-size: 15px;
+      line-height: 40px;  /* To match the nested paper-icon-button height */
+      display: block;
+      text-decoration: none;
+
+      /* The active links will have a pink border. */
+      border-left: 4px solid transparent;
+      flex-direction: row;
+
+      /* To avoid flashing the content before it's being distributed,
+       * hide the links initially, and revert to display:flex in pw-shell. */
+      display: none;
+    }
+
+    a.site-nav > span {
+      flex: 1;
+      flex-basis: 0;
+    }
+
+    /* The active page */
+    a.site-nav.iron-selected {
+      color: black;
+      border-left: 4px solid #f22c5a;
+      color: #f22c5a;
+    }
+
+    a.site-nav.level-1 {
+      font-family: 'Roboto Slab', 'Roboto', sans-serif;
+      font-weight: 400;
+    }
+
+    a.site-nav.level-2 {
+      color: black;
+    }
+
+    /* This is basically a level-3 link */
+    a.site-nav.level-2.indent {
+      padding-left: 40px;
+      color: black;
+    }
+
+    a.site-nav.greyed-out {
+      background: #f4f5f6;
+      color: #707070;
+      font-weight: 400;
+    }
+
+    a.site-nav.active {
+      color: black;
+      font-weight: 700;
+    }
+  </style>
+
+      <a class="site-nav level-1 greyed-out" href="https://www.polymer-project.org/1.0/" name="/1.0/">
+       <span>Home</span>
+
+            </a>
+
+          <a class="site-nav level-1 greyed-out" href="https://www.polymer-project.org/1.0/start/" name="/1.0/start/">
+       <span>Start</span>
+
+              <paper-icon-button icon="icons:expand-more" onclick="_expandClicked(event)" role="button" tabindex="0" aria-disabled="false">
+       </paper-icon-button>
+            </a>
+
+          <iron-collapse class="site-nav iron-collapse-closed" role="group" aria-hidden="true" aria-expanded="false" style="transition-property: max-height; transition-duration: 0s; max-height: 0px;">
+                              <a class="site-nav level-2 " href="https://www.polymer-project.org/1.0/start/index" name="/1.0/start/index">
+               <span>Get started</span>
+            </a>
+                                        <a class="site-nav level-2" onclick="_expandClicked(event)">
+               <span>Build an element</span>
+               <paper-icon-button icon="icons:expand-more" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+            </a>
+            <iron-collapse role="group" aria-hidden="true" aria-expanded="false" class="iron-collapse-closed" style="transition-property: max-height; transition-duration: 0s; max-height: 0px;">
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/start/first-element/intro" name="/1.0/start/first-element/intro">
+               <span>1. Get set up</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/start/first-element/step-2" name="/1.0/start/first-element/step-2">
+               <span>2. Add local DOM</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/start/first-element/step-3" name="/1.0/start/first-element/step-3">
+               <span>3. Data binding &amp; properties</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/start/first-element/step-4" name="/1.0/start/first-element/step-4">
+               <span>4. React to input</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/start/first-element/step-5" name="/1.0/start/first-element/step-5">
+               <span>5. Theming with custom properties</span>
+            </a>
+                                        </iron-collapse>
+                                        <a class="site-nav level-2" onclick="_expandClicked(event)">
+               <span>Build an app</span>
+               <paper-icon-button icon="icons:expand-more" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+            </a>
+            <iron-collapse role="group" aria-hidden="true" aria-expanded="false" class="iron-collapse-closed" style="transition-property: max-height; transition-duration: 0s; max-height: 0px;">
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/start/toolbox/set-up" name="/1.0/start/toolbox/set-up">
+               <span>1. Get set up</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/start/toolbox/create-a-page" name="/1.0/start/toolbox/create-a-page">
+               <span>2. Create a new page</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/start/toolbox/add-elements" name="/1.0/start/toolbox/add-elements">
+               <span>3. Add some elements</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/start/toolbox/deploy" name="/1.0/start/toolbox/deploy">
+               <span>4. Deploy</span>
+            </a>
+                                        </iron-collapse>
+                        </iron-collapse>
+          <a class="site-nav level-1 active" href="https://www.polymer-project.org/1.0/docs/devguide/feature-overview" name="/1.0/docs/devguide/feature-overview">
+       <span>Polymer</span>
+
+              <paper-icon-button icon="icons:expand-more" onclick="_expandClicked(event)" role="button" tabindex="0" aria-disabled="false">
+       </paper-icon-button>
+            </a>
+
+          <iron-collapse class="site-nav iron-collapse-opened" role="group" aria-hidden="false" aria-expanded="true" style="transition-property: max-height; transition-duration: 0s;">
+                              <a class="site-nav level-2 " href="https://www.polymer-project.org/1.0/docs/devguide/feature-overview" name="/1.0/docs/devguide/feature-overview">
+               <span>Feature overview</span>
+            </a>
+                                        <a class="site-nav level-2 " href="https://www.polymer-project.org/1.0/docs/devguide/quick-tour" name="/1.0/docs/devguide/quick-tour">
+               <span>Quick tour</span>
+            </a>
+                                        <a class="site-nav level-2 active" onclick="_expandClicked(event)">
+               <span>Define elements</span>
+               <paper-icon-button icon="icons:expand-more" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+            </a>
+            <iron-collapse role="group" aria-hidden="false" aria-expanded="true" class="iron-collapse-opened" style="transition-property: max-height; transition-duration: 0s;">
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/devguide/registering-elements" name="/1.0/docs/devguide/registering-elements">
+               <span>Register an element</span>
+            </a>
+                                        <a class="site-nav level-2 indent iron-selected active" href="https://www.polymer-project.org/1.0/docs/devguide/properties" name="/1.0/docs/devguide/properties">
+               <span>Declare properties</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/devguide/instance-methods" name="/1.0/docs/devguide/instance-methods">
+               <span>Instance methods</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/devguide/behaviors" name="/1.0/docs/devguide/behaviors">
+               <span>Behaviors</span>
+            </a>
+                                        </iron-collapse>
+                                        <a class="site-nav level-2" onclick="_expandClicked(event)">
+               <span>Local DOM &amp; styling</span>
+               <paper-icon-button icon="icons:expand-more" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+            </a>
+            <iron-collapse role="group" aria-hidden="true" aria-expanded="false" class="iron-collapse-closed" style="transition-property: max-height; transition-duration: 0s; max-height: 0px;">
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/devguide/local-dom" name="/1.0/docs/devguide/local-dom">
+               <span>Local DOM</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/devguide/styling" name="/1.0/docs/devguide/styling">
+               <span>Styling</span>
+            </a>
+                                        </iron-collapse>
+                                        <a class="site-nav level-2" onclick="_expandClicked(event)">
+               <span>Events</span>
+               <paper-icon-button icon="icons:expand-more" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+            </a>
+            <iron-collapse role="group" aria-hidden="true" aria-expanded="false" class="iron-collapse-closed" style="transition-property: max-height; transition-duration: 0s; max-height: 0px;">
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/devguide/events" name="/1.0/docs/devguide/events">
+               <span>Handle and fire events</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/devguide/gesture-events" name="/1.0/docs/devguide/gesture-events">
+               <span>Gesture events</span>
+            </a>
+                                        </iron-collapse>
+                                        <a class="site-nav level-2" onclick="_expandClicked(event)">
+               <span>Data system</span>
+               <paper-icon-button icon="icons:expand-more" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+            </a>
+            <iron-collapse role="group" aria-hidden="true" aria-expanded="false" class="iron-collapse-closed" style="transition-property: max-height; transition-duration: 0s; max-height: 0px;">
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/devguide/data-system" name="/1.0/docs/devguide/data-system">
+               <span>Data system concepts</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/devguide/model-data" name="/1.0/docs/devguide/model-data">
+               <span>Work with object and array data</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/devguide/observers" name="/1.0/docs/devguide/observers">
+               <span>Observers and computed properties</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/devguide/data-binding" name="/1.0/docs/devguide/data-binding">
+               <span>Data binding</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/devguide/templates" name="/1.0/docs/devguide/templates">
+               <span>Helper elements</span>
+            </a>
+                                        </iron-collapse>
+                                        <a class="site-nav level-2" onclick="_expandClicked(event)">
+               <span>Tools</span>
+               <paper-icon-button icon="icons:expand-more" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+            </a>
+            <iron-collapse role="group" aria-hidden="true" aria-expanded="false" class="iron-collapse-closed" style="transition-property: max-height; transition-duration: 0s; max-height: 0px;">
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/tools/overview" name="/1.0/docs/tools/overview">
+               <span>Tools overview</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/tools/polymer-cli" name="/1.0/docs/tools/polymer-cli">
+               <span>Polymer CLI</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/tools/documentation" name="/1.0/docs/tools/documentation">
+               <span>Document your elements</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/tools/tests" name="/1.0/docs/tools/tests">
+               <span>Test your elements</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/tools/optimize-for-production" name="/1.0/docs/tools/optimize-for-production">
+               <span>Optimize for production</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/tools/reusable-elements" name="/1.0/docs/tools/reusable-elements">
+               <span>Publish an element</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/tools/advanced" name="/1.0/docs/tools/advanced">
+               <span>Advanced tools</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/tools/services" name="/1.0/docs/tools/services">
+               <span>Services</span>
+            </a>
+                                        </iron-collapse>
+                                        <a class="site-nav level-2" onclick="_expandClicked(event)">
+               <span>What's new</span>
+               <paper-icon-button icon="icons:expand-more" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+            </a>
+            <iron-collapse role="group" aria-hidden="true" aria-expanded="false" class="iron-collapse-closed" style="transition-property: max-height; transition-duration: 0s; max-height: 0px;">
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/release-notes" name="/1.0/docs/release-notes">
+               <span>Release notes</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/migration" name="/1.0/docs/migration">
+               <span>1.0 Migration guide</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/about_10" name="/1.0/docs/about_10">
+               <span>About Polymer 1.0</span>
+            </a>
+                                        </iron-collapse>
+                                        <a class="site-nav level-2" onclick="_expandClicked(event)">
+               <span>Resources</span>
+               <paper-icon-button icon="icons:expand-more" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+            </a>
+            <iron-collapse role="group" aria-hidden="true" aria-expanded="false" class="iron-collapse-closed" style="transition-property: max-height; transition-duration: 0s; max-height: 0px;">
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/community" name="/1.0/docs/community">
+               <span>Community</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/browsers" name="/1.0/docs/browsers">
+               <span>Browser compatibility</span>
+            </a>
+                                        </iron-collapse>
+                                        <a class="site-nav level-2" onclick="_expandClicked(event)">
+               <span>API Reference</span>
+               <paper-icon-button icon="icons:expand-more" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+            </a>
+            <iron-collapse role="group" aria-hidden="true" aria-expanded="false" class="iron-collapse-closed" style="transition-property: max-height; transition-duration: 0s; max-height: 0px;">
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/api/Polymer.Base" name="/1.0/docs/api/Polymer.Base">
+               <span>Polymer.Base</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/api/array-selector" name="/1.0/docs/api/array-selector">
+               <span>array-selector</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/api/custom-style" name="/1.0/docs/api/custom-style">
+               <span>custom-style</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/api/dom-bind" name="/1.0/docs/api/dom-bind">
+               <span>dom-bind</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/api/dom-if" name="/1.0/docs/api/dom-if">
+               <span>dom-if</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/api/dom-repeat" name="/1.0/docs/api/dom-repeat">
+               <span>dom-repeat</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/api/dom-template" name="/1.0/docs/api/dom-template">
+               <span>dom-template</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/api/Polymer.Templatizer" name="/1.0/docs/api/Polymer.Templatizer">
+               <span>Polymer.Templatizer</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/docs/devguide/settings" name="/1.0/docs/devguide/settings">
+               <span>Global settings</span>
+            </a>
+                                        </iron-collapse>
+                        </iron-collapse>
+          <a class="site-nav level-1 greyed-out" href="https://www.polymer-project.org/2.0/docs/about_20" name="/2.0/docs/about_20">
+       <span>2.0 Preview</span>
+
+              <paper-icon-button icon="icons:expand-more" onclick="_expandClicked(event)" role="button" tabindex="0" aria-disabled="false">
+       </paper-icon-button>
+            </a>
+
+          <iron-collapse class="site-nav iron-collapse-closed" role="group" aria-hidden="true" aria-expanded="false" style="transition-property: max-height; transition-duration: 0s; max-height: 0px;">
+                              <a class="site-nav level-2 " href="https://www.polymer-project.org/2.0/docs/about_20" name="/2.0/docs/about_20">
+               <span>About Polymer 2.0</span>
+            </a>
+                                        <a class="site-nav level-2 " href="https://www.polymer-project.org/2.0/docs/upgrade" name="/2.0/docs/upgrade">
+               <span>Upgrade guide</span>
+            </a>
+                        </iron-collapse>
+          <a class="site-nav level-1 greyed-out" href="https://www.polymer-project.org/1.0/toolbox/" name="/1.0/toolbox/">
+       <span>App Toolbox</span>
+
+              <paper-icon-button icon="icons:expand-more" onclick="_expandClicked(event)" role="button" tabindex="0" aria-disabled="false">
+       </paper-icon-button>
+            </a>
+
+          <iron-collapse class="site-nav iron-collapse-closed" role="group" aria-hidden="true" aria-expanded="false" style="transition-property: max-height; transition-duration: 0s; max-height: 0px;">
+                              <a class="site-nav level-2 " href="https://www.polymer-project.org/1.0/toolbox/index" name="/1.0/toolbox/index">
+               <span>What's in the box?</span>
+            </a>
+                                        <a class="site-nav level-2" onclick="_expandClicked(event)">
+               <span>Using the Toolbox</span>
+               <paper-icon-button icon="icons:expand-more" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+            </a>
+            <iron-collapse role="group" aria-hidden="true" aria-expanded="false" class="iron-collapse-closed" style="transition-property: max-height; transition-duration: 0s; max-height: 0px;">
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/toolbox/templates" name="/1.0/toolbox/templates">
+               <span>App templates</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/toolbox/app-layout" name="/1.0/toolbox/app-layout">
+               <span>Responsive app layout</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/toolbox/routing" name="/1.0/toolbox/routing">
+               <span>Routing</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/toolbox/localize" name="/1.0/toolbox/localize">
+               <span>Localization</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/toolbox/app-storage" name="/1.0/toolbox/app-storage">
+               <span>App storage</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/toolbox/service-worker" name="/1.0/toolbox/service-worker">
+               <span>Service worker</span>
+            </a>
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/toolbox/server" name="/1.0/toolbox/server">
+               <span>Serve your app</span>
+            </a>
+                                        </iron-collapse>
+                                        <a class="site-nav level-2" onclick="_expandClicked(event)">
+               <span>Case study</span>
+               <paper-icon-button icon="icons:expand-more" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+            </a>
+            <iron-collapse role="group" aria-hidden="true" aria-expanded="false" class="iron-collapse-closed" style="transition-property: max-height; transition-duration: 0s; max-height: 0px;">
+                                        <a class="site-nav level-2 indent" href="https://www.polymer-project.org/1.0/toolbox/case-study" name="/1.0/toolbox/case-study">
+               <span>Shop</span>
+            </a>
+                                        </iron-collapse>
+                        </iron-collapse>
+          <a class="site-nav level-1 greyed-out" href="https://elements.polymer-project.org/" name="https://elements.polymer-project.org">
+       <span>Elements</span>
+
+            </a>
+
+          <a class="site-nav level-1 greyed-out" href="https://www.polymer-project.org/1.0/blog/" name="/1.0/blog/">
+       <span>News</span>
+
+            </a>
+
+      
+<script>
+function _expandClicked(event) {
+  var navLink = Polymer.dom(event).localTarget.parentNode;
+  var navCollapse = navLink.nextElementSibling;
+
+  document.querySelector('pw-shell').styleLinkPath(navLink, !navCollapse.opened);
+
+  // Don't actually click the link.
+  event.preventDefault();
+  event.stopImmediatePropagation();
+}
+</script>
+          <devguide-shell markdown="" page-title="Declared Properties" page-subtitle="">
+    
+                                    <a class="sidenav-content " name="/1.0/docs/devguide/feature-overview" href="https://www.polymer-project.org/1.0/docs/devguide/feature-overview">Feature overview</a>
+                                        <a class="sidenav-content " name="/1.0/docs/devguide/quick-tour" href="https://www.polymer-project.org/1.0/docs/devguide/quick-tour">Quick tour</a>
+                                        <div class="sidenav-content sidenav-header">Define elements</div>
+                                        <a class="sidenav-content indent" name="/1.0/docs/devguide/registering-elements" href="https://www.polymer-project.org/1.0/docs/devguide/registering-elements">Register an element</a>
+                                        <a class="sidenav-content indent iron-selected" name="/1.0/docs/devguide/properties" href="https://www.polymer-project.org/1.0/docs/devguide/properties">Declare properties</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/devguide/instance-methods" href="https://www.polymer-project.org/1.0/docs/devguide/instance-methods">Instance methods</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/devguide/behaviors" href="https://www.polymer-project.org/1.0/docs/devguide/behaviors">Behaviors</a>
+                                        <div class="sidenav-content sidenav-endheader"></div>
+                                        <div class="sidenav-content sidenav-header">Local DOM &amp; styling</div>
+                                        <a class="sidenav-content indent" name="/1.0/docs/devguide/local-dom" href="https://www.polymer-project.org/1.0/docs/devguide/local-dom">Local DOM</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/devguide/styling" href="https://www.polymer-project.org/1.0/docs/devguide/styling">Styling</a>
+                                        <div class="sidenav-content sidenav-endheader"></div>
+                                        <div class="sidenav-content sidenav-header">Events</div>
+                                        <a class="sidenav-content indent" name="/1.0/docs/devguide/events" href="https://www.polymer-project.org/1.0/docs/devguide/events">Handle and fire events</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/devguide/gesture-events" href="https://www.polymer-project.org/1.0/docs/devguide/gesture-events">Gesture events</a>
+                                        <div class="sidenav-content sidenav-endheader"></div>
+                                        <div class="sidenav-content sidenav-header">Data system</div>
+                                        <a class="sidenav-content indent" name="/1.0/docs/devguide/data-system" href="https://www.polymer-project.org/1.0/docs/devguide/data-system">Data system concepts</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/devguide/model-data" href="https://www.polymer-project.org/1.0/docs/devguide/model-data">Work with object and array data</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/devguide/observers" href="https://www.polymer-project.org/1.0/docs/devguide/observers">Observers and computed properties</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/devguide/data-binding" href="https://www.polymer-project.org/1.0/docs/devguide/data-binding">Data binding</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/devguide/templates" href="https://www.polymer-project.org/1.0/docs/devguide/templates">Helper elements</a>
+                                        <div class="sidenav-content sidenav-endheader"></div>
+                                        <div class="sidenav-content sidenav-header">Tools</div>
+                                        <a class="sidenav-content indent" name="/1.0/docs/tools/overview" href="https://www.polymer-project.org/1.0/docs/tools/overview">Tools overview</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/tools/polymer-cli" href="https://www.polymer-project.org/1.0/docs/tools/polymer-cli">Polymer CLI</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/tools/documentation" href="https://www.polymer-project.org/1.0/docs/tools/documentation">Document your elements</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/tools/tests" href="https://www.polymer-project.org/1.0/docs/tools/tests">Test your elements</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/tools/optimize-for-production" href="https://www.polymer-project.org/1.0/docs/tools/optimize-for-production">Optimize for production</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/tools/reusable-elements" href="https://www.polymer-project.org/1.0/docs/tools/reusable-elements">Publish an element</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/tools/advanced" href="https://www.polymer-project.org/1.0/docs/tools/advanced">Advanced tools</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/tools/services" href="https://www.polymer-project.org/1.0/docs/tools/services">Services</a>
+                                        <div class="sidenav-content sidenav-endheader"></div>
+                                        <div class="sidenav-content sidenav-header">What's new</div>
+                                        <a class="sidenav-content indent" name="/1.0/docs/release-notes" href="https://www.polymer-project.org/1.0/docs/release-notes">Release notes</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/migration" href="https://www.polymer-project.org/1.0/docs/migration">1.0 Migration guide</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/about_10" href="https://www.polymer-project.org/1.0/docs/about_10">About Polymer 1.0</a>
+                                        <div class="sidenav-content sidenav-endheader"></div>
+                                        <div class="sidenav-content sidenav-header">Resources</div>
+                                        <a class="sidenav-content indent" name="/1.0/docs/community" href="https://www.polymer-project.org/1.0/docs/community">Community</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/browsers" href="https://www.polymer-project.org/1.0/docs/browsers">Browser compatibility</a>
+                                        <div class="sidenav-content sidenav-endheader"></div>
+                                        <div class="sidenav-content sidenav-header">API Reference</div>
+                                        <a class="sidenav-content indent" name="/1.0/docs/api/Polymer.Base" href="https://www.polymer-project.org/1.0/docs/api/Polymer.Base">Polymer.Base</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/api/array-selector" href="https://www.polymer-project.org/1.0/docs/api/array-selector">array-selector</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/api/custom-style" href="https://www.polymer-project.org/1.0/docs/api/custom-style">custom-style</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/api/dom-bind" href="https://www.polymer-project.org/1.0/docs/api/dom-bind">dom-bind</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/api/dom-if" href="https://www.polymer-project.org/1.0/docs/api/dom-if">dom-if</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/api/dom-repeat" href="https://www.polymer-project.org/1.0/docs/api/dom-repeat">dom-repeat</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/api/dom-template" href="https://www.polymer-project.org/1.0/docs/api/dom-template">dom-template</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/api/Polymer.Templatizer" href="https://www.polymer-project.org/1.0/docs/api/Polymer.Templatizer">Polymer.Templatizer</a>
+                                        <a class="sidenav-content indent" name="/1.0/docs/devguide/settings" href="https://www.polymer-project.org/1.0/docs/devguide/settings">Global settings</a>
+                                        <div class="sidenav-content sidenav-endheader"></div>
+                        
+      <main>
+        <style>
+  main {
+    position: relative;
+    background: #fafafa;
+    padding: 10px 40px;
+    font-size: 16px;
+    font-family: 'Roboto', 'Noto', sans-serif;
+    line-height: 24px;
+    font-weight: 300;
+    /* layout horizontal-reverse */
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: row-reverse;
+        -ms-flex-direction: row-reverse;
+            flex-direction: row-reverse;
+    -webkit-justify-content: flex-end;
+        -ms-flex-pack: end;
+            justify-content: flex-end;
+  }
+
+  @media (max-width: 1000px) {
+    main {
+      -webkit-flex-direction: column;
+          -ms-flex-direction: column;
+              flex-direction: column;
+      /* At < 1000px, the TOC floats to the top, so we can add back the right-padding. */
+      padding-right: 40px;
+    }
+  }
+
+  @media (max-width: 500px) {
+    main {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
+
+  article {
+    min-width: 0;  /* For some reason, this is non-0 */
+    max-width: 800px;
+    padding-right: 20px;
+  }
+
+  .article-wrapper.right-nav {
+    width: calc(100% - 300px);  /* 300px is the width of the TOC */
+  }
+
+  .details-wrapper {
+    display: block;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-top: 20px;
+    width: 300px;
+  }
+
+  .details-wrapper.fixed {
+    position: fixed;
+    right: 40px;  /* The <main> right padding */
+  }
+
+  .details-wrapper ul {
+    list-style-type: none;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .details-wrapper ul[data-depth="1"], .details-wrapper ul[data-depth="3"] {
+    padding: 0;
+    margin-top: 10px;
+  }
+
+  .details-wrapper ul[data-depth="1"] a, .details-wrapper ul[data-depth="3"] a {
+    color: black;
+    font-weight: 500;
+  }
+
+  .details-wrapper ul[data-depth="2"] {
+    font-weight: 300;
+    padding: 0 20px;
+  }
+
+  .details-wrapper ul[data-depth="2"] a {
+    font-weight: 300;
+  }
+
+  @media (max-width: 1000px) {
+    .details-wrapper {
+      padding: 0;
+      max-width: 100%;
+    }
+  }
+
+  details {
+    display: block;
+    will-change: transform;
+  }
+
+  @media (min-width: 1001px) {
+    details {
+      padding-left: 20px;
+      border-left: 2px solid #eceff1;
+    }
+  }
+
+  details summary {
+    font-family: 'Roboto Slab', 'Roboto', 'Noto', sans-serif;
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 24px;
+  }
+
+  details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  @media (max-width: 1000px) {
+    details summary::-webkit-details-marker {
+      display: inline-block;
+    }
+  }
+
+  pre {
+    background: white;
+    font-weight: 400;
+  }
+
+  code {
+    color: #0d47a1;
+    font-weight: 400;
+    word-wrap: break-word;
+  }
+
+  h1 {
+    font-size: 40px;
+    font-weight: 300;
+    line-height: 48px;
+  }
+
+  h2 {
+    border-bottom: 1px solid #f50057;
+    margin: 20px 0;
+  }
+
+  h3 {
+    font-family: 'Roboto Slab', 'Roboto', 'Noto', sans-serif;
+    font-size: 24px;
+  }
+
+  @media (max-width: 500px) {
+    h3 {
+      font-size: 18px;
+    }
+  }
+
+  h4, p.caption {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  p.caption {
+    margin-bottom: 0;
+  }
+
+  a > code {
+    color: #1e88e5 !important;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  table td {
+    padding-top: 10px;
+    border-top: 1px solid #cfd8dc;
+    /* blue-grey-100 */
+    vertical-align: top;
+  }
+
+  .alert {
+    padding: 10px 10px 10px 44px;  /* 34px from the icon + 10px left padding */
+    margin: 30px;
+    border-radius: 3px;
+    font-size: 15px;
+  }
+
+  @media (max-width: 767px) {
+    .alert {
+      margin: 0px;
+    }
+  }
+
+  .alert:before {
+    display: inline-block;  /* Hack to have the icon in a separate column than the text */
+    float: left;
+    margin-left: -34px;  /* the icon is 24px wide, + 10px padding */
+  }
+
+  .alert.alert-success, .alert.alert-tip {
+    background-color: #E8F5E9;
+    border: 1px solid #C8E6C9;
+  }
+
+  .alert.alert-success:before, .alert.alert-tip:before {
+    content: url(/images/alerts/tip.svg);
+  }
+
+  .alert.alert-info {
+    background-color: #E1F5FE;
+    border: 1px solid #B3E5FC;
+  }
+
+  .alert.alert-info:before {
+    content: url(/images/alerts/info.svg);
+  }
+
+  .alert.alert-error, .alert.alert-warning {
+    background-color: #FBE9E7;
+    border: 1px solid #FFCCBC;
+  }
+
+  .alert.alert-error:before, .alert.alert-warning:before {
+    content: url(/images/alerts/warning.svg);
+  }
+
+  code.hljs {
+    background: white;
+    font-weight: 400;
+  }
+
+  /* Helpers to automagically lay out in a row and resize images */
+  .image-container {
+    width: 100%;
+    max-width: 100%;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+
+  .image-container .image-wrapper {
+    -webkit-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    margin: 0 10px;
+  }
+
+  .image-container img {
+    width: 100%;
+    height: auto;
+  }
+</style><div class="details-wrapper fixed" style="top: 64px; max-height: 631px;"><details id="toc" open=""><summary>Contents</summary><ul data-depth="1"><li data-level="H2"><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#property-name-mapping">Property name to attribute name mapping</a></li><li data-level="H2"><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#attribute-deserialization">Attribute deserialization</a><ul data-depth="2"><li data-level="H3"><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#configuring-boolean-properties">Configuring boolean properties</a></li><li data-level="H3"><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#configuring-object-and-array-properties">Configuring object and array properties</a></li></ul></li><li data-level="H2"><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#configure-values">Configuring default property values</a></li><li data-level="H2"><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#notify">Property change notification events (notify)</a></li><li data-level="H2"><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#read-only">Read-only properties</a></li><li data-level="H2"><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#attribute-reflection">Reflecting properties to attributes </a><ul data-depth="2"><li data-level="H3"><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#attribute-serialization">Attribute serialization</a></li></ul></li><li data-level="H2"><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#moved-sections">Moved sections</a></li></ul></details></div><div class="article-wrapper right-nav"><article>
+<p>You can declare properties on your custom element by adding them to
+the <code>properties</code> object on your prototype. Adding a property to the <code>properties</code>
+object allows a user to configure the property from markup (see
+<a href="https://www.polymer-project.org/1.0/docs/devguide/properties#attribute-deserialization">attribute deserialization</a> for details).
+<strong>Any property that's part of your element's public API should be declared in the
+<code>properties</code> object.</strong></p>
+<p>In addition, the <code>properties</code> object can be used to specify:</p>
+<ul>
+<li>Property type.</li>
+<li>Default value.</li>
+<li>Property change observer. Calls a method whenever the property value changes.</li>
+<li>Read-only status. Prevents accidental changes to the property value.</li>
+<li>Two-way data binding support. Fires an event whenever the property value changes.</li>
+<li>Computed property. Dynamically calculates a value based on other properties.</li>
+<li>Property reflection to attribute. Updates the corresponding attribute value when the property
+value changes.</li>
+</ul>
+<p>Many of these features are tightly integrated into the <a href="https://www.polymer-project.org/1.0/docs/devguide/data-system">data system</a>, and are
+documented in the Data system section.</p>
+<p class="caption">Example</p>
+<pre><code class="hljs">Polymer({
+
+  is: <span class="hljs-string">'x-custom'</span>,
+
+  properties: {
+    user: <span class="hljs-built_in">String</span>,
+    isHappy: <span class="hljs-built_in">Boolean</span>,
+    count: {
+      type: <span class="hljs-built_in">Number</span>,
+      readOnly: <span class="hljs-literal">true</span>,
+      notify: <span class="hljs-literal">true</span>
+    }
+  },
+
+  ready: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">this</span>.textContent = <span class="hljs-string">'Hello World, I am a Custom Element!'</span>;
+  }
+
+});
+</code></pre>
+<p>The <code>properties</code> object supports the following keys for each property:</p>
+<table>
+<tbody><tr>
+<th>Key</th><th>Details</th>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>
+Type: constructor (one of <code>Boolean</code>, <code>Date</code>, <code>Number</code>, <code>String</code>, <code>Array</code> or <code>Object</code>)<br>
+<p>Attribute type, used for deserializing from an attribute. Unlike 0.5, the
+property's type is explicit, specified using the type's constructor. See
+<a href="https://www.polymer-project.org/1.0/docs/devguide/properties#attribute-deserialization">attribute deserialization</a> for more information.</p>
+</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td>
+Type: <code>boolean</code>, <code>number</code>, <code>string</code> or <code>function</code>.<br>
+<p>Default value for the property. If <code>value</code> is a function, the function is
+invoked and the return value is used as the default value of the property. If
+the default value should be an array or object unique to the instance, create
+the array or object inside a function. See
+<a href="https://www.polymer-project.org/1.0/docs/devguide/properties#configure-values">Configuring default property values</a> for more information.</p>
+</td>
+</tr>
+<tr>
+<td><code>reflectToAttribute</code></td>
+<td>Type: <code>boolean</code><br>
+<p>Set to <code>true</code> to cause the corresponding attribute to be set on the host node
+when the property value changes. If the property value is Boolean, the attribute
+is created as a standard HTML boolean attribute (set if true, not set if false).
+For other property types, the attribute value is a string representation of the
+property value. Equivalent to <code>reflect</code> in Polymer 0.5.
+See <a href="https://www.polymer-project.org/1.0/docs/devguide/properties#attribute-reflection">Reflecting properties to attributes</a> for
+more information.</p>
+</td>
+</tr>
+<tr>
+<td><code>readOnly</code></td>
+<td>Type: <code>boolean</code><br>
+<p>If <code>true</code>, the property can't be set directly by assignment or data binding. See <a href="https://www.polymer-project.org/1.0/docs/devguide/properties#read-only">Read-only properties</a>.</p>
+</td>
+</tr>
+<tr>
+<td><code>notify</code></td>
+<td>Type: <code>boolean</code><br>
+<p>If <code>true</code>, the property is available for two-way data binding. In addition, an
+event, <code><var>property-name</var>-changed</code> is fired whenever the
+property changes. See <a href="https://www.polymer-project.org/1.0/docs/devguide/properties#notify">Property change notification events (notify)</a>
+for more information.</p>
+</td>
+</tr>
+<tr>
+<td><code>computed</code></td>
+<td>Type: <code>string</code><br>
+<p>The value is interpreted as a method name and argument list. The method is invoked
+to calculate the value whenever any of the argument values changes. Computed
+properties are always read-only. See <a href="https://www.polymer-project.org/1.0/docs/devguide/observers#computed-properties">Computed properties</a>
+for more information.</p>
+</td>
+</tr>
+<tr>
+<td><code>observer</code></td>
+<td>Type: <code>string</code><br>
+<p>The value is interpreted as a method name to be invoked when the property value
+changes. Note that unlike in 0.5, <strong>property change handlers must be registered
+explicitly.</strong> The <code><var>propertyName</var>Changed</code> method will not be
+invoked automatically. See <a href="https://www.polymer-project.org/1.0/docs/devguide/observers">Property change callbacks (observers)</a>
+for more information.</p>
+</td>
+</tr>
+</tbody></table>
+<h2 id="property-name-mapping" class="has-permalink">Property name to attribute name mapping</h2>
+<p>For data binding, deserializing properties from attributes, and reflecting
+properties back to attributes, Polymer maps attribute names to property
+names and the reverse.</p>
+<p>When mapping attribute names to property names:</p>
+<ul>
+<li>
+<p>Attribute names are converted to lowercase property names. For example,
+the attribute <code>firstName</code> maps to <code>firstname</code>.</p>
+</li>
+<li>
+<p>Attribute names with <em>dashes</em> are converted to <em>camelCase</em> property names
+by capitalizing the character following each dash, then removing the dashes.
+For example, the attribute <code>first-name</code> maps to <code>firstName</code>.</p>
+</li>
+</ul>
+<p>The same mappings happen in reverse when converting property names to attribute
+names (for example, if a property is defined using <code>reflectToAttribute: true</code>.)</p>
+<p class="alert alert-warning"><strong>Compatibility note:</strong> In 0.5, Polymer attempted to map attribute names to corresponding properties.
+For example, the attribute <code>foobar</code> would map to the property <code>fooBar</code> if it was
+defined on the element. This <strong>does not happen in 1.0</strong>—attribute to property
+mappings are set up on the element at registration time based on the rules
+described above.
+</p>
+<h2 id="attribute-deserialization" class="has-permalink">Attribute deserialization</h2>
+<p>If a property is configured in the <code>properties</code> object, an attribute on the
+instance matching the property name will be deserialized according to the type
+specified and assigned to a property of the same name on the element instance.</p>
+<p>If no other <code>properties</code> options are specified for a property, the <code>type</code>
+(specified using the type constructor, e.g. <code>Object</code>, <code>String</code>, etc.) can be set
+directly as the value of the property in the <code>properties</code> object; otherwise it
+should be provided as the value to the <code>type</code> key in the <code>properties</code>
+configuration object.</p>
+<p>The type system includes support for Boolean and Number values, Object and Array values
+expressed as JSON, or Date objects expressed as any Date-parsable string
+representation.</p>
+<p>Boolean properties are set based on the <em>presence</em> of the attribute:
+if the attribute exists at all, the property is set to <code>true</code>, regardless
+of the attribute <em>value</em>. If the attribute is absent, the property
+gets its default value.</p>
+<p class="caption">Example:</p>
+<pre><code class="hljs"><span class="hljs-tag">&lt;<span class="hljs-title">script</span>&gt;</span><span class="javascript">
+
+  Polymer({
+
+    is: <span class="hljs-string">'x-custom'</span>,
+
+    properties: {
+      user: <span class="hljs-built_in">String</span>,
+      manager: {
+        type: <span class="hljs-built_in">Boolean</span>,
+        notify: <span class="hljs-literal">true</span>
+      }
+    },
+
+    attached: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-comment">// render</span>
+      <span class="hljs-keyword">this</span>.textContent = <span class="hljs-string">'Hello World, my user is '</span> + (<span class="hljs-keyword">this</span>.user || <span class="hljs-string">'nobody'</span>) + <span class="hljs-string">'.\n'</span> +
+        <span class="hljs-string">'This user is '</span> + (<span class="hljs-keyword">this</span>.manager ? <span class="hljs-string">''</span> : <span class="hljs-string">'not'</span>) + <span class="hljs-string">' a manager.'</span>;
+    }
+
+  });
+
+</span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-title">x-custom</span> <span class="hljs-attribute">user</span>=<span class="hljs-value">"Scott"</span> <span class="hljs-attribute">manager</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">x-custom</span>&gt;</span>
+<span class="hljs-comment">&lt;!--
+&lt;x-custom&gt;'s text content becomes:
+Hello World, my user is Scott.
+This user is a manager.
+--&gt;</span>
+</code></pre>
+<p>In order to configure camel-case properties of elements using attributes, dash-
+case should be used in the attribute name.</p>
+<p class="caption">Example:</p>
+<pre><code class="hljs"><span class="hljs-tag">&lt;<span class="hljs-title">script</span>&gt;</span><span class="actionscript">
+
+  Polymer({
+
+    <span class="hljs-keyword">is</span>: <span class="hljs-string">'x-custom'</span>,
+
+    properties: {
+      userName: String
+    }
+
+  });
+
+</span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-title">x-custom</span> <span class="hljs-attribute">user-name</span>=<span class="hljs-value">"Scott"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">x-custom</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- Sets &lt;x-custom&gt;.userName = 'Scott';  --&gt;</span>
+</code></pre>
+<p><strong>Note:</strong> Deserialization occurs both at create time, and at runtime (for
+example, when the attribute is changed using <code>setAttribute</code>).  However, it is
+encouraged that attributes only be used for configuring properties in static
+markup, and instead that properties are set directly for changes at runtime.</p>
+<h3 id="configuring-boolean-properties" class="has-permalink">Configuring boolean properties</h3>
+<p>For a Boolean property to be configurable from markup, it must default to <code>false</code>. If it defaults to <code>true</code>, you cannot set it to <code>false</code> from markup, since the presence of the attribute, with or without a value, equates to <code>true</code>. This is the standard behavior for attributes in the web platform.</p>
+<p>If this behavior doesn't fit your use case, you can use a string-valued or number-valued attribute instead.</p>
+<h3 id="configuring-object-and-array-properties" class="has-permalink">Configuring object and array properties</h3>
+<p>For object and array properties you can pass an object or array in JSON format:</p>
+<pre><code class="hljs"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">my-element</span> <span class="hljs-attribute">book</span>=<span class="hljs-value">'</span></span></span><span class="hljs-expression">{ <span class="hljs-string">"title"</span>: <span class="hljs-string">"Persuasion"</span>, <span class="hljs-string">"author"</span>: <span class="hljs-string">"Austen"</span> }</span><span class="xml"><span class="hljs-tag"><span class="hljs-value">'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">my-element</span>&gt;</span>
+</span></code></pre>
+<p>Note that JSON requires double quotes, as shown above.</p>
+<h2 id="configure-values" class="has-permalink">Configuring default property values</h2>
+<p>Default values for properties may be specified in the <code>properties</code> object using
+the <code>value</code> field.  The value may either be a primitive value, or a function
+that returns a value.</p>
+<p>If you provide a function, Polymer calls the function once
+<em>per element instance</em>.</p>
+<p>When initializing a property to an object or array value, use a function to
+ensure that each element gets its own copy of the value, rather than having
+an object or array shared across all instances of the element.</p>
+<p class="caption">Example:</p>
+<pre><code class="hljs"><span class="hljs-tag">Polymer</span>(<span class="hljs-rules">{
+
+  <span class="hljs-rule"><span class="hljs-attribute">is</span>:<span class="hljs-value"> <span class="hljs-string">'x-custom'</span>,
+
+  properties: {
+
+    mode: {
+      type: String,
+      value: <span class="hljs-string">'auto'</span>
+    </span></span></span>},
+
+    <span class="hljs-tag">data</span>: <span class="hljs-rules">{
+      <span class="hljs-rule"><span class="hljs-attribute">type</span>:<span class="hljs-value"> Object,
+      notify: true,
+      value: <span class="hljs-function">function</span>() { return {</span></span></span>}; }
+    }
+
+  }
+
+});
+</code></pre>
+<h2 id="notify" class="has-permalink">Property change notification events (notify)</h2>
+<p>When a property is set to <code>notify: true</code>, an event is fired whenever the
+property value changes. The event name is:</p>
+<p><code><var>property-name</var>-changed</code></p>
+<p>Where <code><var>property-name</var></code> is the dash-case version of
+the property name. For example, a change to <code>this.firstName</code> fires
+<code>first-name-changed</code>.</p>
+<p>These events are used by the two-way data binding system. External
+scripts can also listen for events (such as <code>first-name-changed</code>)
+directly using <code>addEventListener</code>.</p>
+<p>For more on property change notifications and the data system, see
+<a href="https://www.polymer-project.org/1.0/docs/devguide/data-system#data-flow">Data flow</a>.</p>
+<h2 id="read-only" class="has-permalink">Read-only properties</h2>
+<p>When a property only "produces" data and never consumes data, this can be made
+explicit to avoid accidental changes from the host by setting the <code>readOnly</code>
+flag to <code>true</code> in the <code>properties</code> property definition.  In order for the
+element to actually change the value of the property, it must use a private
+generated setter of the convention <code>_set<var>Property</var>(value)</code>.</p>
+<pre><code class="hljs"><span class="hljs-tag">&lt;<span class="hljs-title">script</span>&gt;</span><span class="javascript">
+  Polymer({
+
+    properties: {
+      response: {
+        type: <span class="hljs-built_in">Object</span>,
+        readOnly: <span class="hljs-literal">true</span>,
+        notify: <span class="hljs-literal">true</span>
+      }
+    },
+
+    responseHandler: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+      <span class="hljs-keyword">this</span>._setResponse(response);
+    }
+
+  });
+</span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+</code></pre>
+<p>For more on read-only properties and data binding, see
+<a href="https://www.polymer-project.org/1.0/docs/devguide/data-system#data-flow-control">How data flow is controlled</a>.</p>
+<h2 id="attribute-reflection" class="has-permalink">Reflecting properties to attributes </h2>
+<p>In specific cases, it may be useful to keep an HTML attribute value in sync with
+a property value.  This may be achieved by setting <code>reflectToAttribute: true</code> on
+a property in the <code>properties</code> configuration object.  This will cause any
+<a href="https://www.polymer-project.org/1.0/docs/devguide/data-system#observable-changes">observable change</a> to the property to be serialized out to an
+attribute of the same name.</p>
+<pre><code class="hljs"><span class="hljs-tag">&lt;<span class="hljs-title">script</span>&gt;</span><span class="javascript">
+  Polymer({
+
+    properties: {
+     response: {
+        type: <span class="hljs-built_in">Object</span>,
+        reflectToAttribute: <span class="hljs-literal">true</span>
+     }
+    },
+
+    responseHandler: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+      <span class="hljs-keyword">this</span>.response = <span class="hljs-string">'loaded'</span>;
+      <span class="hljs-comment">// results in this.setAttribute('response', 'loaded');</span>
+    }
+
+  });
+</span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+</code></pre>
+<h3 id="attribute-serialization" class="has-permalink">Attribute serialization</h3>
+<p>When reflecting a property to an attribute or
+<a href="https://www.polymer-project.org/1.0/docs/devguide/data-binding#attribute-binding">binding a property to an attribute</a>,
+the property value is <em>serialized</em> to the attribute.</p>
+<p>By default, values are serialized according to value's  <em>current</em> type
+(regardless of the property's <code>type</code> value):</p>
+<ul>
+<li><code>String</code>. No serialization required.</li>
+<li><code>Date</code> or <code>Number</code>. Serialized using  <code>toString</code>.</li>
+<li><code>Boolean</code>. Results in a non-valued attribute to be either set (<code>true</code>) or removed (<code>false</code>).</li>
+<li><code>Array</code> or <code>Object</code>. Serialized using <code>JSON.stringify</code>.</li>
+</ul>
+<p>To supply custom serialization for a custom element, override your element's <code>serialize</code> method.</p>
+<h2 id="moved-sections" class="has-permalink">Moved sections</h2>
+<p>The following section have moved to <a href="https://www.polymer-project.org/1.0/docs/devguide/observers">Observers and computed properties</a>:</p>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#change-callbacks"></a></p>
+<ul>
+<li>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/observers#change-callbacks">Observe a property</a>.</p>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#multi-property-observers"></a></p>
+</li>
+<li>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/observers#multi-property-observers">Observe multiple properties or paths</a>.</p>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#observing-path-changes"></a></p>
+</li>
+<li>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/observers#observing-path-changes">Observe changes to a subproperty</a>.</p>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#array-observation"></a></p>
+</li>
+<li>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/observers#array-observation">Observe array mutations</a>.</p>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#key-splices"></a></p>
+</li>
+<li>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/observers#key-splices">Track key splices</a>.</p>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#deep-observation"></a></p>
+</li>
+<li>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/observers#deep-observation">Deep sub-property observation</a>.</p>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#key-paths"></a></p>
+</li>
+<li>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/observers#key-paths">Deep sub-property changes on array items</a>.</p>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#dependencies"></a></p>
+</li>
+<li>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/observers#dependencies">Always include dependencies as observer arguments</a>.</p>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#computed-properties"></a></p>
+</li>
+<li>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/observers#computed-properties">Computed properties</a></p>
+</li>
+</ul>
+<p>The following sections have moved to <a href="https://www.polymer-project.org/1.0/docs/devguide/model-data">Work with object and array data</a>:</p>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#array-mutation"></a></p>
+<ul>
+<li>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/model-data#array-mutation">Mutate an array</a>.</p>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/properties#notifysplices"></a></p>
+</li>
+<li>
+<p><a href="https://www.polymer-project.org/1.0/docs/devguide/model-data#notifysplices">Notify Polymer of array mutations</a>.</p>
+</li>
+</ul>
+</article></div>
+      </main>
+    </devguide-shell>
+
+  </pw-shell>
+  <pw-footer></pw-footer>
+  <script src="./Declared Properties - Polymer Project_files/app.js"></script>
+
+</body></html>

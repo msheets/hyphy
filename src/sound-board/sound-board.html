@@ -1,0 +1,145 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../paper-audio-button/paper-audio-button.html">
+<link rel="import" href="../record-mic/record-mic.html">
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../../bower_components/vaadin-context-menu/vaadin-long-touch.html">
+
+<!--
+`sound-board`
+Soundboard of paper-audio-buttons
+
+@demo demo/index.html 
+-->
+
+<dom-module id="sound-board">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 5px;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */      
+
+        --record-mic-background: var(--app-secondary-color);
+        --record-mic-pulse-start: rgba(0, 200, 83,0.4);
+        --record-mic-pulse-send: rgba(0, 200, 83,0);
+      }
+      #beatPad {
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;  
+        
+        -webkit-flex-flow: row wrap;
+        flex-flow: row wrap;
+
+        /* Then we define how is distributed the remaining space */
+        justify-content: space-around;
+        align-items: flex-start;
+      }
+
+      #recordMic {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+      }
+    </style>
+
+    <div id="beatPad">
+    </div>   
+
+    <record-mic id="recordMic"></record-mic>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'sound-board',
+
+      behaviors: [
+        Polymer.NeonSharedElementAnimatableBehavior
+      ],
+
+      // https://github.com/PolymerElements/neon-animation/blob/master/demo/tiles/circles-page.html
+      properties: {
+        animationConfig: {
+          value: function() {
+            var buttons = Polymer.dom(this.root).querySelectorAll('paper-audio-button');
+            var buttonsArray = Array.prototype.slice.call(buttons);
+            return {
+              'entry': [{
+                name: 'hero-animation',
+                id: 'hero',
+                toPage: this
+              }, {
+                name: 'cascaded-animation',
+                animation: 'scale-up-animation',
+                nodes: buttonsArray
+              }],
+              'exit': [{
+                name: 'hero-animation',
+                id: 'hero',
+                fromPage: this
+              }, {
+                name: 'cascaded-animation',
+                animation: 'scale-down-animation'
+              }]
+            };
+          }
+        }
+      },
+
+      listeners: {
+        'record-mic-result': '_onNewRecording'
+      },
+
+      _onNewRecording: function(e) {
+        var newAudioButton = document.createElement('paper-audio-button');
+        newAudioButton.src = e.detail.audioURL;
+        newAudioButton.clipDuration = e.detail.estDuration - 0.1; // better to understimate and have progress finish early than never finish
+        newAudioButton.volumeData = e.detail.volumeData;
+        this.listen(newAudioButton, 'vaadin-long-touch', '_onClick'); // set up listener
+
+        // visibility???
+        this.$.beatPad.appendChild(newAudioButton);
+        newAudioButton.playAnimation('entry');
+      },
+
+      _onClick: function(e) {
+        var target = Polymer.dom(event).localTarget;
+
+        if (target.nodeName == 'PAPER-AUDIO-BUTTON') { // figure out how to make PAPER-AUDIO-BUTTON
+          // configure the page animation
+          this.sharedElements = {
+            'hero': target
+          };
+          var nodesToScale = []; // nodes to scale away
+          var buttons = Polymer.dom(this.root).querySelectorAll('paper-audio-button');
+          for (var button, index = 0; button = buttons[index]; index++) {
+            if (button !== event.target) {
+              nodesToScale.push(button);
+            }
+          }
+          this.animationConfig['exit'][1].nodes = nodesToScale;
+          this.fire('open-editor', {
+            title: target.title,
+            startTime: target.startTime,
+            endTime: target.endTime,
+            clipDuration: target.clipDuration,
+            volumeData: target.volumeData,
+            src: target.src
+          });
+        }
+      }
+    });
+  </script>
+</dom-module>

@@ -3,6 +3,7 @@
 <link rel="import" href="../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-range-slider/paper-range-slider.html">
+<link rel="import" href="../../bower_components/iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
 <link rel="import" href="../waveform/waveform-element.html">
 <link rel="import" href="../waveform-button/waveform-button.html">
 <link rel="import" href="../shared-styles.html">
@@ -36,9 +37,6 @@ Editor for modifying the features of a paper-audio-button
         -moz-user-select: none;     /* Firefox all */
         -ms-user-select: none;      /* IE 10+ */
         user-select: none;          /* Likely future */   
-
-
-  
       }
 
       #buttons {
@@ -77,6 +75,7 @@ Editor for modifying the features of a paper-audio-button
       <waveform-button id="waveformButton" volume-data="{{volumeData}}" src="{{src}}" start-time="{{startTime}}" end-time="{{endTime}}" clip-duration="{{clipDuration}}"></waveform-button>
       <paper-range-slider style="width: 100%;" id="range" min="0" max="{{clipDuration}}" value-diff-min="0.1" step="0.005" value-min="{{startTime}}" value-max="{{endTime}}"></paper-range-slider>
       <paper-input id="title" label="Title" char-counter maxlength="18" value="{{title}}"></paper-input>
+      <iron-a11y-keys id="a11y" target="[[target]]" keys="enter" on-keys-pressed="onEnter"></iron-a11y-keys>
       <div id="buttons">
         <paper-button on-click="cancelEdit">Cancel</paper-button>
         <paper-button on-click="saveEdit">Save</paper-button>
@@ -89,8 +88,13 @@ Editor for modifying the features of a paper-audio-button
       is: 'audio-button-editor',
 
       behaviors: [
-        Polymer.NeonSharedElementAnimatableBehavior
+        Polymer.NeonSharedElementAnimatableBehavior,
+        Polymer.IronA11yKeysBehavior
       ],
+
+      keyBindings: {
+        'enter': '_enterPressed'
+      },
 
       properties: {
         title: {
@@ -140,6 +144,13 @@ Editor for modifying the features of a paper-audio-button
               }]
             };
           }
+        }
+      },
+
+      // remove focus from title if enter is pressed on it
+      _enterPressed: function(e) {
+        if (this.shadowRoot.activeElement === this.$.title) {
+          this.$.title.blur();
         }
       },
 
