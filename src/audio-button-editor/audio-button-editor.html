@@ -46,6 +46,7 @@ Editor for modifying the features of a paper-audio-button
         flex-wrap: nowrap;
         justify-content: flex-end;
         width: 100%;
+        margin-top: 32px;
       }
 
       /* TODO cleanup to variables where appropriate */
@@ -69,6 +70,12 @@ Editor for modifying the features of a paper-audio-button
         margin-left: calc(15px + 2px/2);
         margin-right: calc(15px + 2px/2);
       }
+
+      #saveButton {
+        background-color: blueviolet; /*var(--primary-color, --paper-purple-800);*/
+        color: white;
+      }
+
     </style>
 
     <div id="editor" class="card">
@@ -88,7 +95,7 @@ Editor for modifying the features of a paper-audio-button
           </div>
         </paper-dialog>
         <paper-button on-click="cancelEdit">Cancel</paper-button>
-        <paper-button on-click="saveEdit">Save</paper-button>
+        <paper-button id="saveButton" on-click="saveEdit">Save</paper-button>
       </div>
     </div>
   </template>
