@@ -1,0 +1,477 @@
+<link href='https://fonts.googleapis.com/css?family=Roboto+Mono' rel='stylesheet' type='text/css'>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../bower_components/paper-ripple/paper-ripple.html">
+
+<link rel="import" href="../../bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
+
+<link rel="import" href="../../bower_components/vaadin-context-menu/vaadin-long-touch.html">
+
+<!--
+A custom audio player with material paper style and clean design.
+
+Example:
+
+    <paper-audio-button src="audio.mp3"></paper-audio-button>
+
+### Styling the player:
+
+This player has an accent color, and you have two option to modify it:
+
+- **Option 1**: Using the *color property* on element. This one is handy if you need to modify the color dynamically.
+
+
+    <paper-audio-button color="#F05C38" src="audio.mp3"></paper-audio-button>
+
+
+- **Option 2**: Using the *custom CSS property*:
+
+
+
+    paper-audio-button {
+       --paper-audio-button-color: #e91e63;
+    }
+
+The following mixins are available for styling:
+
+Custom property                             | Description                                 | Default
+--------------------------------------------|---------------------------------------------|----------
+--paper-audio-button-color                  | Color of the element                        | blueviolet
+
+@element paper-audio-button
+@demo demo/index.html
+-->
+<dom-module id="audio-button">
+  <template>
+
+    <style is="custom-style">
+
+      :host {
+        display: block;
+        margin: 5px;
+        box-sizing: border-box;
+        flex: 1 1 108px;
+   
+        height: 110px;
+        font-family: 'Roboto Mono', 'Helvetica Neue', Arial, sans-serif;
+
+        --paper-button: {
+          margin: 0;
+        }
+
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */   
+      }
+
+      #title,
+      #progressRemaining {
+        /* Vertical centering */
+        display: flex;
+        justify-content:center;
+        align-content:center;
+        flex-direction:column;
+
+        text-align: center;
+        line-height: 1.2em;
+        font-size: 24px;
+        word-wrap: break-word;
+
+        pointer-events: none;
+      }
+
+      #title {
+        z-index: 2;
+        color: var(--paper-audio-button-color, blueviolet);
+      }
+
+      #progressRemaining {
+        width: 0px;
+        z-index: 5;
+        color: #fff;
+        overflow: hidden;
+      }
+
+      #progressElapsed {
+        width: 100%;
+        transform-origin: left;
+        transform: scaleX(0);
+        background: var(--paper-audio-button-color, blueviolet);
+      }
+
+      paper-button {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        background: rgba(255,255,255,.75);
+      }
+
+      paper-ripple {
+        color: var(--paper-audio-button-color, blueviolet);
+      }
+
+      /* On hover */
+      :host:not(.cantplay) #right:hover #replay {
+        opacity: 1;
+      }
+
+      /* On Error */
+      :host(.cantplay) #title {
+        font-size: 12px;
+      }
+
+      :host(.cantplay) #wrapper {
+        cursor: default;
+      }
+
+      :host(.cantplay) #play {
+        opacity: 0;
+      }
+
+      /* Flexbox Helpers */
+      .layout-horizontal {
+        display: flex;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        -ms-flex-direction: row;
+        -webkit-flex-direction: row;
+        flex-direction: row;
+      }
+
+      .flex {
+        -ms-flex: 1;
+        -webkit-flex: 1;
+        flex: 1 0 auto;
+      }
+
+      .fit {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+      .self-start {
+        -ms-align-self: flex-start;
+        -webkit-align-self: flex-start;
+        align-self: flex-start;
+      }
+
+      .self-end {
+        -ms-align-self: flex-end;
+        -webkit-align-self: flex-end;
+        align-self: flex-end;
+      }
+
+    </style>
+
+    <paper-button id="base" raised>
+      <!-- Title -->      
+      <div id="content" class="fit">{{ content }}</div>
+        
+        <!-- Audio HTML5 element -->
+        <audio id="audio" src="{{ src }}" preload="auto"></audio>
+
+        <!-- Progress bar -->
+        <div id="progressElapsed" class="fit"></div>
+        <div id="progressRemaining" class="fit">
+          <div id="contentRemaining">{{ content }}</div>
+        </div>
+
+        <!-- Error 
+        <iron-icon id="error" icon="error-outline" class="fit" hidden$="{{ !error }}"></iron-icon>-->
+    </paper-button>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'paper-audio-button',
+
+      behaviors: [
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+
+      // Define public properties
+      properties: {
+        src: {
+          type: String,
+          observer: "_srcChanged"
+        },
+        title: {
+          type: String,
+          value: ''
+        },
+        startTime: {
+          type: Number,
+          value: 0
+        },
+        endTime: {
+          type: Number,
+          value: Infinity
+        },
+        color: {
+          type: String,
+          observer: '_changeColor'
+        },
+        autoPlay: {
+          type: Boolean,
+          value: false
+        },
+        // this is current time with respect to duration, not clipDuration
+        currentTime: {
+          type: Number,
+          value: 0,
+          notify: true
+        },
+        timeLeft: {
+          type: Number,
+          value: 0
+        },
+        error: {
+          type: Boolean
+        },
+        
+        // duration measures the calculated duration based off of start and end time
+        duration: {
+          type: Number,
+          value: Infinity
+        },
+        
+        // for streams, we cannot detect duration, so rely on user to return
+        // clipDuration represents the duration of the clip in it's entirity
+        clipDuration: {
+          type: Number,
+          value: Infinity
+        },
+        volumeData: {
+          type: Array,
+          value: []
+        },
+        animationConfig: {
+          type: Object,
+          value: function() {
+            return {
+              'entry': [{
+                name: 'scale-up-animation',
+                node: this
+              }]
+            }
+          }
+        }
+      },
+
+      // Register event listeners
+      listeners: {
+        'audio.loadedmetadata'  : '_onCanPlay',
+        'audio.error'           : '_onError',
+        'audio.playing'         : '_onPlaying',
+        'audio.pause'           : '_onPause',
+        'audio.ended'           : '_onEnd',
+        'vaadin-long-touch'     : '_preventDefault', // long touch should not do anything here... - this porbably isn't
+        'tap'                   : 'restart',
+        'neon-animation-finish' : '_onNeonAnimationFinish'
+      },
+
+      // When element is created
+      ready: function() {
+        var button = this;
+
+        button.$.audio.load();
+
+        // Initialize private variables
+        button.canBePlayed = false;
+        button.isPlaying = false;
+        button.ended = false;
+        button.error = false;
+      },
+
+      // when audio file can be played in user's browser
+      _onCanPlay: function() {
+        var button = this;
+
+        button.canBePlayed = true;
+        this._calculateDuration();
+        button.timeLeft = button.duration;
+   
+        // auto play if specified
+        if (button.autoPlay) button.$.audio.play();
+      },
+
+      // if one changes we need to update
+      _calculateDuration: function() {
+        var button = this;
+
+        // TODO: ensure start time is not greater than endTime
+
+        // If the duration of the audio file is finite, update clipDuration to match
+        button.clipDuration = (isFinite(button.$.audio.duration)) ? button.$.audio.duration : button.clipDuration;
+        button.endTime = Math.min(button.endTime, button.clipDuration);
+        button.duration = button.endTime - button.startTime;
+
+        // TODO: Known issue - if the clip duration is provided rather than calculated, 
+        // and then later is calculated, the endTime will be less than the clipDuration 
+        // and therefore will cut out prematurely
+      },
+
+      // on file load error
+      _onError: function() {
+        var button = this;
+        button.classList.add('cantplay');
+        button.title = '';
+        button.error = true;
+      },
+
+
+      // Play/Pause controls
+      playPause: function(e){
+        e.preventDefault();
+        var button = this;
+
+        if (button.canBePlayed) {
+          return button.isPlaying ? button.$.audio.pause() : button.$.audio.play();
+        }
+      },
+
+
+      // Restart
+      restart: function(e){
+        e.preventDefault();
+        var button = this;
+        button.$.audio.currentTime = button.startTime;
+        if (!button.isPlaying) button.$.audio.play();
+      },
+
+
+      // when Player starts playing
+      _onPlaying: function() {
+        var button = this;
+        button.ended = false;
+        button.isPlaying = true;
+        button._startProgressTimer();
+      },
+
+      // starts Timer
+      _startProgressTimer: function() {
+        var button = this;
+
+        // can we extrac this out for efficiency
+        button.$.titleRemaining.style.width = button.$.base.getBoundingClientRect().width + 'px';
+
+        button.timer = {};
+
+        // attempt to update to actual audio time if it's available after playback
+        this._calculateDuration();
+
+        // check playback on tighter schedule...
+        if (button.timer.endReachedInterval) clearInterval(button.endReachedInterval);
+        button.timer.endReachedInterval = setInterval(function() {
+          if (button.$.audio.currentTime > button.endTime) {
+            button.$.audio.pause();
+            button._onEnd();
+          }
+        }, 10); // TODO - hone this interval for performance
+
+        // use requestAnimationFrame
+
+        var interval = 20; // msec        var interval = 20; // msec
+        if (button.timer.sliderUpdateInterval) clearInterval(button.timer.sliderUpdateInterval);
+        button.timer.sliderUpdateInterval = setInterval(function(){
+          if (button.isPlaying) {
+            button.currentTime = button.$.audio.currentTime - button.startTime;
+            button.timeLeft = button.duration - button.currentTime;
+
+            // snap to the end if close
+            if (button.timeLeft < (interval / 1000)) {
+              button.currentTime = button.duration;
+              button.timeLeft = 0;
+            }
+
+            var percentagePlayed = button.currentTime / button.duration;
+
+            // note: do not go past 0
+            var translateX = Math.min(0, -1 * button.$.base.getBoundingClientRect().width + percentagePlayed * button.$.base.getBoundingClientRect().width);
+            button.$.progressElapsed.style.transform = 'translateX('+ translateX +'px)';
+            button.$.progressRemaining.style.width = percentagePlayed * button.$.base.getBoundingClientRect().width + 'px';
+
+          } else {
+            clearInterval(button.timer.sliderUpdateInterval);
+          }
+        }, interval); // TODO: figure out how to do a better job w/ this interval so it always ends...
+      },
+
+
+      // when Player is paused
+      _onPause: function() {
+        var button = this;
+        button.isPlaying = false;
+      },
+
+
+      // when Player ended playing an audio file
+      _onEnd: function() {
+        var button = this;
+        button.ended = true;
+        button.isPlaying = false;
+
+        button.$.audio.currentTime = button.startTime;
+
+        // after playback is ended, reset visual
+        setTimeout(function(){ 
+          button.$.progressElapsed.style.transform = 'scaleX(0)'; // hide once again
+          button.$.progressRemaining.style.width = 0;
+        }, 300);
+
+      },
+
+      // to convert seconds to 'm:ss' format
+      _convertSecToMin: function(seconds){
+        if (seconds === 0) return '';
+
+        var minutes = Math.floor(seconds / 60);
+        var secondsToCalc = Math.floor(seconds % 60) + '';
+        return minutes + ':' + (secondsToCalc.length < 2 ? '0' + secondsToCalc : secondsToCalc);
+      },
+
+      // If src is changed when track is playing,
+      // pause the track and start playing a new src
+      _srcChanged: function(oldValue, newValue) {
+        var button = this;
+
+        if (button.isPlaying) {
+          button.$.audio.pause();
+          button.$.audio.currentTime = 0;
+          button.$.audio.play();
+        }
+      },
+
+      // If color property is changed,
+      // update all the nodes with the new accent color
+      _changeColor: function(newValue) {
+        var button = this;
+        button.$.title.style.color = newValue;
+        button.$.progressElapsed.style.backgroundColor = newValue;
+      },
+
+      _preventDefault: function(e) {
+        // just need to do something here to intercept tap
+        event.preventDefault();
+      },
+
+      _onNeonAnimationFinish: function() {
+        // set the second title to flow out an dfill space
+        var button = this;
+
+        // button.$.titleRemaining.style.width = button.$.base.getBoundingClientRect().width + 'px';
+      }
+    });
+  </script>
+</dom-module>

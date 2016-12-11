@@ -1,0 +1,137 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="paper-audio-button/paper-audio-button.html">
+<link rel="import" href="record-mic/record-mic.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="sound-board">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 5px;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        --record-mic-background: var(--app-secondary-color);
+        --record-mic-pulse-start: rgba(0, 200, 83,0.4);
+        --record-mic-pulse-send: rgba(0, 200, 83,0);
+      }
+      #beatPad {
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;  
+        
+        -webkit-flex-flow: row wrap;
+        flex-flow: row wrap;
+
+        /* Then we define how is distributed the remaining space */
+        justify-content: space-around;
+        align-items: flex-start;
+      }
+
+      #recordMic {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+      }
+    </style>
+
+    <div id="beatPad">
+    </div>   
+
+ <!-- need to make a paper-audio-beatpad as a grid you can plug in -->
+
+    <record-mic id="recordMic"></record-mic>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'sound-board',
+
+      behaviors: [
+        Polymer.NeonSharedElementAnimatableBehavior
+      ],
+
+      // https://github.com/PolymerElements/neon-animation/blob/master/demo/tiles/circles-page.html
+      properties: {
+        animationConfig: {
+          value: function() {
+            var buttons = Polymer.dom(this.root).querySelectorAll('paper-audio-button');
+            var buttonsArray = Array.prototype.slice.call(buttons);
+            return {
+              'entry': [{
+                name: 'cascaded-animation',
+                animation: 'scale-up-animation',
+                nodes: buttonsArray
+              }],
+              'exit': [{
+                name: 'hero-animation',
+                id: 'hero',
+                fromPage: this
+              }, {
+                name: 'cascaded-animation',
+                animation: 'scale-down-animation'
+              }]
+            };
+          }
+        }
+      },
+
+      listeners: {
+        'record-mic-result': '_onNewRecording',
+        'tap': '_onClick'
+      },
+
+      _onNewRecording: function(e) {
+        var newAudioButton = document.createElement('paper-audio-button');
+        newAudioButton.src = e.detail.audioURL;
+        newAudioButton.title = '';
+        newAudioButton.duration = e.detail.estDuration - 0.1; // better to understimate and have progress finish early than never finish
+
+        this.$.beatPad.appendChild(newAudioButton);
+        newAudioButton.show();
+      },
+
+      _onClick: function(e) {
+        e.stopPropagation();
+
+        var target = Polymer.dom(event).rootTarget;
+        console.log(target.nodeName);
+        if (target.nodeName <> 'PAPER-BUTTON') { // TODO: figure out PAPER-AUDIO-BUTTON
+          console.log("pass");
+          // configure the page animation
+          this.sharedElements = {
+            'hero': target
+          };
+          var nodesToScale = []; // nodes to scale away
+          var buttons = Polymer.dom(this.root).querySelectorAll('paper-audio-button');
+          for (var button, index = 0; button = buttons[index]; index++) {
+            if (button !== event.target) {
+              nodesToScale.push(button);
+            }
+          }
+          this.animationConfig['exit'][1].nodes = nodesToScale;
+          
+          this.fire('open-editor');
+        }
+      }
+    });
+  </script>
+</dom-module>
