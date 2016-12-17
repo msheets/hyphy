@@ -1,0 +1,194 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<!--<link rel="import" href="my-icons.html">-->
+
+
+<!--<link rel="import" href="bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="bower_components/polymerfire/polymerfire.html">-->
+
+<dom-module id="hyphy-app">
+  <template>
+    <style>
+      :host {
+        --primary-color: var(--paper-purple-800);
+        --app-primary-color: var(--paper-purple-800);
+        --app-secondary-color: var(--paper-green-a200);
+        --app-secondary-4alpha: rgba(105,240,174,0.4);
+        --app-secondary-0alpha: rgba(105,240,174,0);
+
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */   
+
+        display: block;
+      }
+
+      /* avoid focus outlines */
+      *:focus {
+        outline: none;
+      }
+      textarea:focus, input:focus{
+        outline: none;
+      }
+
+      body { -webkit-touch-callout: none !important; }
+      a { -webkit-user-select: none !important; }
+
+
+     paper-header-panel {
+        --paper-header-panel-shadow: {
+            height: 6px;
+            bottom: -6px;
+            box-shadow: inset 0px 5px 6px -3px rgba(0, 0, 0, 0.4);
+        };
+      }
+
+      paper-header-panel[main] paper-toolbar {
+        --paper-toolbar-background: none;
+        --paper-toolbar-color: default;
+        --paper-toolbar-height: 64px;
+      }
+
+      app-header {
+        /* color: #fff;
+        background-color: var(--app-primary-color); */
+      }
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+
+      .drawer-list {
+        margin: 0 20px;
+      }
+
+      .drawer-list a {
+        display: block;
+
+        padding: 0 16px;
+
+        text-decoration: none;
+
+        color: #EEEEEE;
+
+        line-height: 40px;
+      }
+
+      .drawer-list a.iron-selected {
+        font-weight: bold;
+      }
+    </style>
+
+    <app-location route="{{route}}"></app-location>
+    <app-route
+        route="{{route}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
+
+    <paper-drawer-panel>
+      <!-- Drawer content -->
+      <paper-header-panel drawer>
+        <paper-toolbar>
+          <span class="title">Menu</span>
+        </paper-toolbar>
+        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+          <a name="view-board" href="/view-board">Board</a>
+        </iron-selector>
+      </paper-header-panel>
+
+      <!-- Main content -->
+      <paper-header-panel main mode="waterfall">
+        <paper-toolbar>
+          <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+          <span class="title">Hyphy</span>
+          <paper-icon-button disabled icon="settings" title="settings"></paper-icon-button>
+        </paper-toolbar>
+
+        <login></login>
+
+        <iron-pages
+            selected="[[page]]"
+            attr-for-selected="name"
+            fallback-selection="view-404"
+            role="main">
+          <hyphy-view-board name="view-board"></hyphy-view-board>
+          <hyphy-view-404 name="view-404"></hyphy-view-404>
+        </iron-pages>
+      </paper-header-panel>
+    </paper-drawer-panel>
+
+    <firebase-document
+      id="document"
+      app-name="notes"
+      path="[[editableNoteId]]"
+      data="{{editableNote}}">
+  </firebase-document>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'hyphy-app',
+
+      properties: {
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged'
+        }
+      },
+
+      observers: [
+        '_routePageChanged(routeData.page)'
+      ],
+
+      // TODO: identify why manifest setting wasn't working
+      ready: function() {
+        var promise = screen.orientation.lock('portrait');
+        promise.catch(function(err) {
+          console.log("Error in screen.orientation.lock: " + err);
+        });
+      },
+
+      // Sets default page
+      _routePageChanged: function(page) {
+        this.page = page || 'view-board';
+      },
+
+      _pageChanged: function(page) {
+        // Load page import on demand. Show 404 page if fails
+        var resolvedPageUrl = this.resolveUrl('hyphy-' + page + '.html');
+        this.importHref(resolvedPageUrl, null, this._showPage404, true);
+      },
+
+      _showPage404: function() {
+        this.page = 'hyphy-view-404';
+      }
+    });
+  </script>
+</dom-module>
